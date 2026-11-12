@@ -1,0 +1,10 @@
+# KiCad per-user and generated files
+*.kicad_prl
+*-backups/
+fp-info-cache
+*.lck
+# pcb-skidl.ps1's report and SKiDL's logs
+current/
+*.erc
+*.log
+__pycache__/

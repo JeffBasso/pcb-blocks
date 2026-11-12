@@ -1,0 +1,10 @@
+# KiCad files stay byte-identical across checkouts (tools/check-blocks.ps1 compares design-block
+# sheets with their block project's sheet byte for byte).
+*.kicad_sch    text eol=lf
+*.kicad_sym    text eol=lf
+*.kicad_mod    text eol=lf
+*.kicad_pro    text eol=lf
+*.json         text eol=lf
+*-lib-table    text eol=lf
+*.py           text eol=lf
+*.png          binary

@@ -1,0 +1,4 @@
+(fp_lib_table
+	(version 7)
+	(lib (name "pcb-blocks") (type "KiCad") (uri "${KIPRJMOD}/../../lib/pcb-blocks.pretty") (options "") (descr "pcb-blocks (this repo)"))
+)
