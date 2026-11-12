@@ -113,12 +113,13 @@ def poe_pd(PR12, PR36, PR45, PR78, POE_VDD, PRI_RTN, VCIN, VCOUT, CONV_SS,
     tph += u10['18']
     no_connect(u10['8'], u10['9'], u10['16'], u10['19'])   # AMPS_CTL, MPS_DUTY, UVLO_SEL, BT unused
 
-    # source: SLUSCD1C 8.2.2.4 p34 (RDEN 24.9k); Table 1 p18 (Class 6 = 63.4R + 249R; Class 8 = 63.4R + 90.9R).
+    # source: SLUSCD1C 8.2.2.4 p34 (RDEN 24.9k); Table 1 p18 (Class 8 = RCLSA 63.4R + RCLSB 90.9R,
+    # 62-71 W at the PD, 5 class events).
     r100 = R('R100', '24.9k 1%')
     r100[1, 2] += POE_VDD, den
     r101 = R('R101', '63.4R 1%')
     r101[1, 2] += clsa, poe_vss
-    r102 = R('R102', '249R 1% (Class 6; 90.9R = Class 8)')
+    r102 = R('R102', '90.9R 1% (Class 8)')
     r102[1, 2] += clsb, poe_vss
     # source: SLUSCD1C p4 pin table (REF 49.9k 1% to VSS).
     r103 = R('R103', '49.9k 1%')

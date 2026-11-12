@@ -1,5 +1,5 @@
 {
-  "description": "IEEE 802.3bt PoE PD front end: two PDS5100 Schottky bridges, CM choke and SMBJ58A TVS, TPS2373-4 (Class 6 strapped; Class 8 = R102 90.9R), TPH/TPL over FOD817AS optocouplers. Drawn and parity-checked; not yet bench-proven. No compliance certification claimed.",
+  "description": "IEEE 802.3bt PoE PD front end: two PDS5100 Schottky bridges, CM choke and SMBJ58A TVS, TPS2373-4 (Class 8 strapped, up to 71 W at the PD), TPH/TPL over FOD817AS optocouplers. Drawn and parity-checked; not yet bench-proven. No compliance certification claimed.",
   "keywords": "PoE PD 802.3bt TPS2373",
   "fields": {
     "License": "CERN-OHL-P-2.0",

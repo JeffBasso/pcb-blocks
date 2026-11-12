@@ -12,7 +12,7 @@ measurements from a built board. Until then it's a reviewed design, not a tested
 
 | Block | What it is | Proven on | Status |
 |---|---|---|---|
-| [`poe_pd`](blocks/poe_pd/BLOCK.md) | IEEE 802.3bt PoE PD front end: Schottky bridges, CM choke and TVS, TPS2373-4 (Class 6, Class 8 by one resistor), TPH/TPL over optocouplers | not yet (wallnode-amp rev A) | drawn, parity 0 |
+| [`poe_pd`](blocks/poe_pd/BLOCK.md) | IEEE 802.3bt PoE PD front end: Schottky bridges, CM choke and TVS, TPS2373-4 (Class 8), TPH/TPL over optocouplers | not yet (wallnode-amp rev A) | drawn, parity 0 |
 
 ## What's in a block
 

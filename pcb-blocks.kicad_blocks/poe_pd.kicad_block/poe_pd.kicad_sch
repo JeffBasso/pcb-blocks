@@ -4911,7 +4911,7 @@
 				)
 			)
 		)
-		(property "Value" "249R 1% (Class 6; 90.9R = Class 8)"
+		(property "Value" "90.9R 1% (Class 8)"
 			(at 274.986 81.28 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -7413,7 +7413,7 @@
 		)
 		(uuid "279f85ef-e45f-4f50-b1ec-2f3cda4ed28d")
 	)
-	(text "Class 6: SLUSCD1C Table 1 p18"
+	(text "Class 8: SLUSCD1C Table 1 p18"
 		(exclude_from_sim no)
 		(at 246.38 99.06 0)
 		(effects
