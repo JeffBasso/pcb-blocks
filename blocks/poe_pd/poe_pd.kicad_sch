@@ -1,0 +1,613 @@
+(kicad_sch
+	(version 20260306)
+	(generator "pcb-blocks-cut_sheet")
+	(generator_version "10.0")
+	(uuid "50c39529-0c47-507a-ae92-328446ce711e")
+	(paper "A4")
+	(title_block
+		(title "pcb-blocks - PoE PD")
+		(comment 1 "CERN-OHL-P-2.0")
+	)
+	(lib_symbols
+		(symbol "power:PWR_FLAG"
+			(power global)
+			(pin_numbers
+				(hide yes)
+			)
+			(pin_names
+				(offset 0)
+				(hide yes)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(in_pos_files yes)
+			(duplicate_pin_numbers_are_jumpers no)
+			(property "Reference" "#FLG"
+				(at 0 1.905 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "PWR_FLAG"
+				(at 0 3.81 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Datasheet" ""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Description" "Special symbol for telling ERC where power comes from"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_keywords" "flag power"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(symbol "PWR_FLAG_0_0"
+				(pin power_out line
+					(at 0 0 90)
+					(length 0)
+					(name ""
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(symbol "PWR_FLAG_0_1"
+				(polyline
+					(pts
+						(xy 0 0) (xy 0 1.27) (xy -1.016 1.905) (xy 0 2.54) (xy 1.016 1.905) (xy 0 1.27)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
+	)
+	(symbol
+		(lib_id "power:PWR_FLAG")
+		(at 71.12 83.82 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "85e707b1-4625-5c6b-8a58-19844f7c41d6")
+		(property "Reference" "#FLG001"
+			(at 71.12 90.17 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "PWR_FLAG"
+			(at 71.12 80.01 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 71.12 83.82 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 71.12 83.82 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "77dea2e7-c16a-52a9-9135-6883b6254701")
+		)
+		(instances
+			(project "poe_pd"
+				(path "/50c39529-0c47-507a-ae92-328446ce711e"
+					(reference "#FLG001")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:PWR_FLAG")
+		(at 71.12 93.98 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "695b9910-ceeb-5ef3-9a27-1532b7f89af4")
+		(property "Reference" "#FLG002"
+			(at 71.12 100.33 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "PWR_FLAG"
+			(at 71.12 90.17 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 71.12 93.98 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 71.12 93.98 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "bda3ff19-b5be-5e0f-9ec8-1661d6ec4585")
+		)
+		(instances
+			(project "poe_pd"
+				(path "/50c39529-0c47-507a-ae92-328446ce711e"
+					(reference "#FLG002")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 63.5 83.82) (xy 71.12 83.82)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "dfe960a1-54fe-5ea5-a558-2f518aa382d5")
+	)
+	(wire
+		(pts
+			(xy 63.5 93.98) (xy 71.12 93.98)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "cf078e78-401c-52d4-b411-026a0ef64719")
+	)
+	(wire
+		(pts
+			(xy 50.8 40.64) (xy 63.5 40.64)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "befac388-ccd5-56ea-a275-3d2ba3746d52")
+	)
+	(wire
+		(pts
+			(xy 50.8 43.18) (xy 63.5 43.18)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b39acf71-266f-584a-9c2b-4b00a2b17c18")
+	)
+	(wire
+		(pts
+			(xy 50.8 45.72) (xy 63.5 45.72)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "4481b9fe-e540-5c80-95b4-d5a4db12051f")
+	)
+	(wire
+		(pts
+			(xy 50.8 48.26) (xy 63.5 48.26)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "7bf1d755-4120-5ec8-9421-7dc714ed60d3")
+	)
+	(wire
+		(pts
+			(xy 50.8 50.8) (xy 63.5 50.8)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "7e09f7ac-9b9c-51aa-bb26-db849f5f5c56")
+	)
+	(wire
+		(pts
+			(xy 50.8 53.34) (xy 63.5 53.34)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6d968714-f8b6-5a2c-99ce-99e290079bcf")
+	)
+	(wire
+		(pts
+			(xy 50.8 55.88) (xy 63.5 55.88)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "bbc8c1c4-e244-51ff-a8dd-137abbf90af1")
+	)
+	(wire
+		(pts
+			(xy 50.8 58.42) (xy 63.5 58.42)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "fe839cf8-eaf4-5ac1-af65-f4b8af9913d5")
+	)
+	(wire
+		(pts
+			(xy 50.8 60.96) (xy 63.5 60.96)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "13aa7705-fabc-5eca-ad19-ece4503ab643")
+	)
+	(global_label "+3V3"
+		(shape passive)
+		(at 63.5 83.82 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "1d5b43f3-ec14-5161-9a6c-d8133082882b")
+	)
+	(global_label "GND"
+		(shape passive)
+		(at 63.5 93.98 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "670ac55d-e81f-597f-a452-c79ccfb46819")
+	)
+	(global_label "PR12"
+		(shape input)
+		(at 50.8 40.64 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "be989d8d-a206-5aa6-a64b-50b297f5337c")
+	)
+	(global_label "PR36"
+		(shape input)
+		(at 50.8 43.18 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "c0374796-54be-5518-b271-f5c7e7848268")
+	)
+	(global_label "PR45"
+		(shape input)
+		(at 50.8 45.72 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "49c5515e-ef30-5bb3-aca6-3b7cca1cb612")
+	)
+	(global_label "PR78"
+		(shape input)
+		(at 50.8 48.26 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "a04c433b-b2ad-52d5-ab8e-02aa41d4a80c")
+	)
+	(global_label "POE_VDD"
+		(shape bidirectional)
+		(at 50.8 50.8 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "469388b4-0bca-5d28-a530-421eb4b59c41")
+	)
+	(global_label "VCIN"
+		(shape bidirectional)
+		(at 50.8 53.34 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "9d93faa2-43e4-5c04-b144-201cfc0db570")
+	)
+	(global_label "CONV_SS"
+		(shape output)
+		(at 50.8 55.88 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "1b3cf49c-2848-54f6-8e1b-e2889f7584c5")
+	)
+	(global_label "POE_TPH_N"
+		(shape output)
+		(at 50.8 58.42 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "cb0d0e4a-9f07-58a7-8872-5c85902b8a49")
+	)
+	(global_label "POE_TPL_N"
+		(shape output)
+		(at 50.8 60.96 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "d1eeff44-954f-56b3-90a9-e2578f6f4889")
+	)
+	(sheet
+		(at 63.5 38.1)
+		(size 38.1 25.4)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "ad098fb4-51ee-5bed-b53f-a31abaca7be1")
+		(property "Sheetname" "PoE PD"
+			(at 63.5 37.3884 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "poe_pd_sheet.kicad_sch"
+			(at 63.5 64.0846 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(pin "PR12" input
+			(at 63.5 40.64 180)
+			(uuid "010222c7-261e-5e10-aa1e-90ddf5e7d193")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "PR36" input
+			(at 63.5 43.18 180)
+			(uuid "9f6bc11c-4d33-5408-92bf-98f886739f68")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "PR45" input
+			(at 63.5 45.72 180)
+			(uuid "3ce1c6db-3c10-532b-b69f-68e2474fb554")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "PR78" input
+			(at 63.5 48.26 180)
+			(uuid "2813b503-0f45-5c2d-8018-c6fb02076db5")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "POE_VDD" bidirectional
+			(at 63.5 50.8 180)
+			(uuid "cc9204db-9e85-5ab0-948e-575ab106ad37")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "VCIN" bidirectional
+			(at 63.5 53.34 180)
+			(uuid "a886ff50-98d0-5109-9157-18f811cc151e")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "CONV_SS" output
+			(at 63.5 55.88 180)
+			(uuid "7af438d8-b9b4-58f0-82d5-3cea164e22a3")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "POE_TPH_N" output
+			(at 63.5 58.42 180)
+			(uuid "20d4b3e6-6241-5c74-9407-46a3d6f8de0c")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "POE_TPL_N" output
+			(at 63.5 60.96 180)
+			(uuid "eff45309-9ef3-50db-a2b5-346f4178dfe1")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(instances
+			(project "poe_pd"
+				(path "/50c39529-0c47-507a-ae92-328446ce711e"
+					(page "2")
+				)
+			)
+		)
+	)
+	(sheet_instances
+		(path "/"
+			(page "1")
+		)
+	)
+	(embedded_fonts no)
+)

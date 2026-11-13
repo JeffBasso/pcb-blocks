@@ -1,0 +1,16 @@
+{
+  "meta": {
+    "filename": "poe_pd.kicad_pro",
+    "version": 3
+  },
+  "sheets": [
+    [
+      "50c39529-0c47-507a-ae92-328446ce711e",
+      "Root"
+    ],
+    [
+      "ad098fb4-51ee-5bed-b53f-a31abaca7be1",
+      "PoE PD"
+    ]
+  ]
+}
