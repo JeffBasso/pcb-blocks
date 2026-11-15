@@ -1,0 +1,24 @@
+(version 1)
+
+# poe_pd block layout rules (pcb-blocks#2). The same rules as wallnode-amp, where the block was drawn.
+# A board that places the block brings its own rules; keep these in step with it.
+
+# PoE nets (POE_IN netclass, up to 57 V): IPC-2221 Table 6-1 B2, external uncoated, 31-150 V = 0.6 mm.
+# Pad-to-pad inside the fine-pitch parts follows their land patterns (B4, coated/under the body, 0.13 mm).
+(rule "POE_IN 57 V copper except pad-to-pad"
+	(condition "(A.NetClass == 'POE_IN' || B.NetClass == 'POE_IN') && !(A.Type == 'Pad' && B.Type == 'Pad')")
+	(constraint clearance (min 0.6mm)))
+
+# Fan-out inside the TPS2373 (U10, 0.65 mm pitch): POE_IN items keep 0.2 mm inside U10's courtyard
+# (same basis, B4 under the part body); 0.6 mm everywhere else. Later rules take priority.
+(rule "POE_IN fan-out inside the TPS2373 courtyard"
+	(condition "(A.NetClass == 'POE_IN' || B.NetClass == 'POE_IN') && (A.intersectsCourtyard('U10') || B.intersectsCourtyard('U10'))")
+	(constraint clearance (min 0.2mm)))
+
+# Isolation barrier: secondary copper (the opto outputs, +3V3, GND) keeps 6 mm from everything on the PoE
+# side, in clearance and in creepage. 6 mm is wallnode-amp's moat placeholder until IEC 62368-1 is in the
+# library; the FOD817 (5000 Vrms) pads are 7.52 mm apart, so the opto pads pass with margin.
+(rule "isolation barrier: secondary vs primary"
+	(condition "A.NetClass == 'SECONDARY' && B.NetClass != 'SECONDARY' && B.NetName != ''")
+	(constraint clearance (min 6mm))
+	(constraint creepage (min 6mm)))

@@ -12,7 +12,7 @@ measurements from a built board. Until then it's a reviewed design, not a tested
 
 | Block | What it is | Proven on | Status |
 |---|---|---|---|
-| [`poe_pd`](blocks/poe_pd/BLOCK.md) | IEEE 802.3bt PoE PD front end: Schottky bridges, CM choke and TVS, TPS2373-4 (Class 8), TPH/TPL over optocouplers | not yet (wallnode-amp rev A) | drawn, parity 0 |
+| [`poe_pd`](blocks/poe_pd/BLOCK.md) | IEEE 802.3bt PoE PD front end: Schottky bridges, CM choke and TVS, TPS2373-4 (Class 8), TPH/TPL over optocouplers | not yet (wallnode-amp rev A) | drawn, parity 0; laid out (2-layer, DRC 0) |
 
 ## What's in a block
 
@@ -25,8 +25,13 @@ blocks/<name>/
   <name>.kicad_sch         test project's top sheet: the block as one sheet, its ports to global labels
   <name>_sheet.kicad_sch   the drawn block
   <name>.png               the drawn block, for reading without KiCad
+  <name>.kicad_pcb         the block's layout (optional): the test project's board, with an outline for DRC
+  <name>.kicad_dru         that board's design rules
+  layout_<name>.py         the script that makes the layout (pcbnew Python), if it was made by script
+  <name>_layout.png        the layout, for reading without KiCad
 pcb-blocks.kicad_blocks/<name>.kicad_block/
   <name>.kicad_sch         KiCad design block: a byte-identical copy of <name>_sheet.kicad_sch
+  <name>.kicad_pcb         the layout: <name>.kicad_pcb without its outline (tools/block_layout.py)
   <name>.json              its description, keywords and fields
 lib/pcb-blocks.kicad_sym, lib/pcb-blocks.pretty/   symbols and footprints the blocks need beyond KiCad's own
 ```
@@ -42,6 +47,9 @@ tables. Without the kit, add those three yourself, pointing at this checkout.
    `# from pcb-blocks <tag or main> (<commit>)` so you know which version you took.
 3. Call it from your `board()` with your nets, and check the drawing and the Python agree (the kit's
    `pcb-skidl.ps1 <board> -Sheet "<sheet name>"`).
+4. If the block has a layout, bring it onto your board as one group (KiCad applies a design block's
+   layout when the PCB is updated from the schematic; headless, copy positions and copper by reference).
+   It uses F.Cu and B.Cu only; your board's inner planes, pours and isolation barrier stay yours.
 
 Pin to a commit: a later change here doesn't change your board. Blocks get tags (`poe-pd-v1.0`)
 once they're bench-proven.
@@ -57,7 +65,10 @@ once they're bench-proven.
 4. Run `tools\check-blocks.ps1` until every block passes. Then run the kit's
    `pcb-sch-junctions.ps1 blocks\<name> -Check` and `kicad-cli sch erc` on the block project, both
    with 0 errors.
-5. Write BLOCK.md (all seven sections) and BRINGUP.md, and open a pull request.
+5. Write BLOCK.md (all seven sections, and section 9 for a layout) and BRINGUP.md, and open a pull
+   request.
+6. Optional layout: make the test project's board (`blocks/<name>/<name>.kicad_pcb`, DRC 0), then
+   `python tools/block_layout.py copy . <name>` to put it in the design block.
 
 The drawing and the Python change together, in the same commit, with `check-blocks.ps1` passing.
 
@@ -65,9 +76,11 @@ The drawing and the Python change together, in the same commit, with `check-bloc
 
 - `tools/cut_sheet.py`: cuts a block out of a drawn sheet and refuses an unclean cut. Run it with the
   kit's SKiDL venv python, or any Python 3.10+. Tests: `python -m unittest discover -s tools`.
-- `tools/check-blocks.ps1`: parity and the design-block copy check for every block. Needs the kit's
-  `pcb-skidl.ps1` (`-Kit <folder>`, default `C:\dev\pcb`). Tests: `tools/check-blocks.Tests.ps1`
-  (Pester 5).
+- `tools/block_layout.py`: writes (`copy`) and checks (`check`) a block's layout in its design block -
+  the test project's board without its Edge.Cuts outline. Any Python 3.10+.
+- `tools/check-blocks.ps1`: parity, the design-block copy check and, for a block with a layout, the
+  layout copy check, for every block. Needs the kit's `pcb-skidl.ps1` (`-Kit <folder>`, default
+  `C:\dev\pcb`) and `python` on PATH. Tests: `tools/check-blocks.Tests.ps1` (Pester 5 or later).
 
 ## Licence
 
