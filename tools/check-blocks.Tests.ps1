@@ -29,8 +29,23 @@ Describe 'check-blocks.ps1' {
     It 'passes on the repo: parity 0 and every design block identical to its block sheet' {
         $r = Invoke-Check (New-RepoCopy)
         $r.Code | Should -Be 0
-        $r.Out | Should -Match 'poe_pd: parity 0, design block identical'
+        $r.Out | Should -Match 'poe_pd: parity 0, design block identical, layout identical'
         $r.Out | Should -Match 'All 1 block\(s\) pass'
+    }
+    It 'fails when the design block layout differs from the test project board' {
+        $d = New-RepoCopy
+        $f = Join-Path $d 'pcb-blocks.kicad_blocks\poe_pd.kicad_block\poe_pd.kicad_pcb'
+        (Get-Content -Raw -LiteralPath $f) -replace '\(width 1\)', '(width 0.9)' | Set-Content -LiteralPath $f -NoNewline
+        $r = Invoke-Check $d
+        $r.Code | Should -Be 1
+        $r.Out | Should -Match 'poe_pd: the design block layout differs from blocks\\poe_pd\\poe_pd\.kicad_pcb'
+    }
+    It 'fails when the design block has no layout but the test project has a board' {
+        $d = New-RepoCopy
+        Remove-Item -LiteralPath (Join-Path $d 'pcb-blocks.kicad_blocks\poe_pd.kicad_block\poe_pd.kicad_pcb')
+        $r = Invoke-Check $d
+        $r.Code | Should -Be 1
+        $r.Out | Should -Match 'poe_pd: no layout in the design block'
     }
     It 'fails when a design block differs from its block sheet by one byte' {
         $d = New-RepoCopy

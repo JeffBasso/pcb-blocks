@@ -4,6 +4,7 @@
   "fields": {
     "License": "CERN-OHL-P-2.0",
     "Source": "https://github.com/JeffBasso/pcb-blocks/tree/main/blocks/poe_pd",
-    "Status": "not yet bench-proven"
+    "Status": "not yet bench-proven",
+    "Layout": "F.Cu/B.Cu, 62 x 45 mm, 6 mm isolation barrier under the optos (BLOCK.md section 9)"
   }
 }

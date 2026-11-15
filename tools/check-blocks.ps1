@@ -8,7 +8,9 @@
     For each blocks\<name>\ it runs the PCB design kit's pcb-skidl.ps1 (-Libs <repo>\lib, so the repo's
     own library is used), then compares pcb-blocks.kicad_blocks\<name>.kicad_block\<name>.kicad_sch with
     blocks\<name>\<name>_sheet.kicad_sch. A block folder without a design block, or a design block
-    without a block folder, fails too.
+    without a block folder, fails too. When the block has a PCB layout (blocks\<name>\<name>.kicad_pcb), the
+    design block's <name>.kicad_pcb must be that board without its Edge.Cuts outline (tools\block_layout.py,
+    run with python from PATH).
     -Kit defaults to C:\dev\pcb, where the kit installs pcb-skidl.ps1 (it needs the kit's SKiDL venv and
     KiCad 10's kicad-cli). Runs under Windows PowerShell 5.1 or PowerShell 7.
     Exit codes: 0 every block passes; 1 a block fails; 2 pcb-skidl.ps1 wasn't found.
@@ -57,7 +59,18 @@ foreach ($b in $blocks) {
             $ok = $false
         }
     }
-    if ($ok) { Write-Host "$b`: parity 0, design block identical" -ForegroundColor Green } else { $failed++ }
+    # The block's PCB layout (pcb-blocks#2): the design block's <b>.kicad_pcb is the test project's board
+    # without its Edge.Cuts outline. block_layout.py checks it; a block without a layout passes with "no layout".
+    $layout = 'no layout'
+    if ((Test-Path -LiteralPath (Join-Path $dir "$b.kicad_pcb")) -or (Test-Path -LiteralPath (Join-Path $dbLib "$b.kicad_block\$b.kicad_pcb"))) {
+        $lay = & python (Join-Path $PSScriptRoot 'block_layout.py') check $Root $b 2>&1
+        if ($LASTEXITCODE -ne 0) {
+            $lay | ForEach-Object { Write-Host "$_" -ForegroundColor Red }
+            $ok = $false
+        }
+        $layout = 'layout identical'
+    }
+    if ($ok) { Write-Host "$b`: parity 0, design block identical, $layout" -ForegroundColor Green } else { $failed++ }
 }
 
 if ($failed) { Write-Host "$failed problem(s) in $($blocks.Count) block(s)." -ForegroundColor Red; exit 1 }

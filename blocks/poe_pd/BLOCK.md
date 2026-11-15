@@ -12,6 +12,9 @@ has rows.
 One difference from that drawing: the block is strapped for Class 8 (R102 90.9R), where wallnode-amp
 rev A is still strapped for Class 6 (249R).
 
+The block has a PCB layout (section 9). It was made headless by script, DRC-clean in the block's test
+project, and hasn't been built or compared with another layout yet.
+
 ## 2. What it is
 
 The PD side of a PoE port, from the magnetics' centre taps to the DC-DC converter's input:
@@ -179,8 +182,11 @@ measured, this section gets the board and rev, a link to the bring-up data in
 3. Call `poe_pd(...)` from the board's `board()` with the board's nets. KiCad re-annotates the
    placed sheet, so set `ref=` in the copy to match, or let the parity report list what to change.
 4. Run `pcb-skidl.ps1 <board> -Sheet "PoE PD"` until it reports 0 differences.
+5. Bring the layout across (section 9): `pcb-blocks.kicad_blocks/poe_pd.kicad_block/poe_pd.kicad_pcb`,
+   applied as one group to the board's 31 footprints, matched by reference.
 
-The converter, the magnetics and the 1500 Vrms barrier are the board's.
+The converter, the magnetics and the board's own isolation barrier (the moat, inner planes and pours) are
+the board's.
 
 ## 8. Parity
 
@@ -201,3 +207,34 @@ The 5 unconnected pins are U10's four unused pins and pin 20 (NC), all with no-c
 
 `kicad-cli sch erc` on the block project: 0 errors and 2 warnings, both for CONV_SS having only one
 pin inside the block (it goes to the converter on a board).
+
+## 9. Layout
+
+`poe_pd.kicad_pcb` in this folder is the block's test-project board; the design block holds the same board
+without its outline (`pcb-blocks.kicad_blocks/poe_pd.kicad_block/poe_pd.kicad_pcb`, written and checked by
+`tools/block_layout.py`; `tools/check-blocks.ps1` fails if they differ).
+
+![The layout, top](poe_pd_layout.png)
+
+**How it was made (pcb-blocks#2, 2026-11-15).** Everything is scripted with KiCad 10's pcbnew Python in
+`layout_poe_pd.py` (`prepare`, then `finish` to fill the pour); nothing is autorouted. Freerouting was tried
+for the small signals and dropped: it applies the POE_IN 0.6 mm clearance to the TPS2373's own 0.65 mm-pitch
+pins (it can't read the courtyard exception below), so it couldn't route the fan-out and oscillated on the
+bridge nets. The script places and locks all 31 parts and draws every track, via and zone, so the layout can
+be regenerated and reviewed line by line.
+
+| | |
+|---|---|
+| Size | 62 x 45 mm outline (the test project's), parts on the top side only |
+| Copper | F.Cu and B.Cu only, so the block sits on a 2-, 4- or 6-layer board; inner layers are the board's |
+| Flow | bridges (four input rows, PR in the middle of each) -> L10 -> VDD / VSS rails with D10, C102, C101 across them -> U10 -> C105 under U10; the optos straddle the barrier at the top, the secondary strip above them |
+| Power path | 1.0 mm: BR_P / BR_N buses, the PR links, the VDD and VSS rails, RTN to C105 and VDD to C105 (B.Cu). Class 8 is ~1.7 A at the PD (71 W from 42 V); IPC-2221 external, 10 C rise, 1 oz needs ~0.62 mm |
+| U10 | fan-out 0.25-0.3 mm, kept inside the courtyard where the pins are 0.65 mm apart; exposed pad (VSS) to a 168 mm2 POE_VSS pour on B.Cu through the footprint's thermal vias. SLUSCD1C p37 asks for nine thermal vias; the footprint has four (2 x 2, 0.3 mm drill), as on wallnode-amp: an open point for the first board's layout review |
+| Clearances | POE_IN nets (POE_VDD, POE_VSS, BR_P/N, PR12-PR78, VCIN) 0.6 mm (IPC-2221 Table 6-1 B2, 31-150 V), 0.2 mm inside U10's courtyard (B4, under the body); other nets 0.15 mm. In `poe_pd.kicad_dru` and the project's netclasses, the same as wallnode-amp |
+| Isolation barrier | a 6 mm keep-out band (no tracks, vias or pours, F.Cu and B.Cu) under U11 / U12, and a DRC rule: secondary nets (+3V3, GND, POE_TPH_N, POE_TPL_N) keep 6 mm clearance and creepage from everything else. 6 mm is wallnode-amp's moat placeholder until IEC 62368-1 is in the library. Measured: 7.04 mm from the closest secondary copper (the GND link) to primary copper; the FOD817 pads are 7.52 mm apart |
+| Ports | the pads themselves: PR12-PR78 on the bridge diodes' PR pads (left), POE_VDD and PRI_RTN on C105's pads (bottom), VCIN / VCOUT on C103 / C104 / D11, CONV_SS on R104 pad 2, POE_TPH_N / POE_TPL_N / +3V3 / GND on R107 / R108 and the opto emitters (top) |
+| Checks | DRC (`kicad-cli pcb drc --refill-zones --schematic-parity`): 0 errors, 0 warnings, 0 unconnected, parity 0 |
+| Silkscreen | designators 1.0 mm (0.8 mm where 1.0 mm has no clear spot), off pads; D55's has no clear spot between the bridge rows and is on F.Fab only |
+
+A board that places the block keeps its own barrier: the band has to line up with the board's moat, and no
+inner-layer plane may run under the band or join the two sides.
