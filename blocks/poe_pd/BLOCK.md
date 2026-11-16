@@ -25,9 +25,9 @@ The PD side of a PoE port, from the magnetics' centre taps to the DC-DC converte
   and 0.1 uF across VDD-VSS;
 - a TPS2373-4 (U10) for detection (24.9k), classification and the internal hot-swap FET. It's
   strapped for **Class 8**, the 802.3bt maximum: RCLSA (R101) 63.4R and RCLSB (R102) 90.9R give
-  62-71 W at the PD after 5 class events (SLUSCD1C Table 1 p18). At 71 W the RTN current is about
-  1.7 A from a 42 V port, inside the 1.85 A RTN rating (p6); the choke (2.8 A) and the PDS5100s
-  (5 A) have room. A board that wants less fits a bigger RCLSB from the same table (249R = Class 6);
+  62-71 W at the PD after 5 class events (SLUSCD1C Table 1 p18). Every part is rated for
+  **continuous 90 W at the PD** (the full Class 8 PSE budget on a short cable), section 5a. A board
+  that wants less fits a bigger RCLSB from the same table (249R = Class 6);
 - the VC_IN/VC_OUT bias (D11, C103, C104), and PG held through 0R (R104) to the converter's
   soft-start;
 - TPH and TPL carried across the isolation barrier by two FOD817AS optocouplers (U11, U12), with
@@ -43,7 +43,7 @@ The design is TI's PMP20878 PD stage (TIDRRG3B sheet 2) with the deviations list
 | Port | On the sheet | Direction | Rating | Source |
 |---|---|---|---|---|
 | PR12, PR36, PR45, PR78 | hierarchical label | in | Magnetics centre taps, 0 to 57 V DC between pair sets | IEEE 802.3bt PSE range; SLUSCD1C 8.2.2.1 p33 |
-| POE_VDD | hierarchical label | out | Rectified PoE, 0 to 57 V; up to 71.3 W at the PD at Class 8 (a Type 4 PSE), less when the PSE grants less (section 4) | SLUSCD1C p1; Table 1 p18 |
+| POE_VDD | hierarchical label | out | Rectified PoE, 0 to 57 V; up to 71.3 W at the PD at Class 8 (a Type 4 PSE), less when the PSE grants less (section 4). Parts rated for 90 W continuous, 1.73 A (section 5a) | SLUSCD1C p1; Table 1 p18 |
 | PRI_RTN | power symbol (global) | out | The switched return after the hot-swap FET; 1.85 A max RTN current | SLUSCD1C p6 |
 | VCIN | hierarchical label | in | The converter's bias winding into VC_IN (D11 also feeds VC_OUT from it) | SLUSCD1C 8.2.2.8 p35 |
 | VCOUT | power symbol (global) | out | VC_OUT, the bias supply for the converter's controller (about 10-13 V); also drives the opto LEDs | SLUSCD1C p4, 8.2.2.8 p35 |
@@ -159,11 +159,43 @@ Deviations from PMP20878, from the wallnode-amp design notes:
   is 80-160%.
 - D11 is an MMDL914 in place of PMP's BAS316, whose datasheet couldn't be obtained.
 
+- C100-C102 are 250 V where PMP20878 uses 100 V, and the class resistors R101/R102 are 0805 (section 5a).
+
 Known open points, carried from the GATE 3 review (not errata, since nothing has been measured):
-- The primary MLCCs are 100 V parts on a 57 V rail, 1.75x, below a 2x derating rule. That's as in
-  TI's reference.
 - The SMDIP-4_W9.53mm footprint still has to be checked against onsemi case 709AH, and the opto
   creepage at layout.
+
+## 5a. Ratings at 90 W (pcb-blocks#5, #3)
+
+The block is rated for the worst case, not the 71.3 W IEEE PD figure: **90 W continuous at the PD**,
+the full Class 8 PSE budget arriving on a short cable. The lowest Type 4 PSE port voltage is 52 V
+(IEEE 802.3bt; the standard wasn't read, see section 4), so the current is 90 / 52 = **1.73 A**
+(1.80 A at 50 V). Derating at 57 V. Air at the board 50 C. Workspace section 5 rules: MLCC >= 2x
+working voltage, resistors <= 50% power, aluminium caps >= 1.25-1.5x, inductor current >= peak +
+20-30%, diodes and FETs >= 1.5x voltage with Tj checked. The calculation is wallnode-amp's
+`calc/poe_pd_90w.py` (JeffBasso/pcb-project-Ion-Speakers), which cites each datasheet page.
+
+| Part | Check at 90 W, 50 C | Result |
+|---|---|---|
+| U10 TPS2373-4 | RTN 1.73 A vs 1.85 A recommended max (SLUSCD1C p6); limit min 1.9 A (p7). Tj = 50 + (1.73^2 x 0.2 ohm max + bias) x 38 C/W = 74 C | pass, 94% (97% at 50 V): the IC is the limit of this block |
+| U10 hot-swap FET | VDD/RTN abs max 100 V vs 57 V (p5) | 1.75x, pass |
+| D50-D57 PDS5100 | 100 V vs 57 V (1.75x). 4-pair balanced, 0.87 A each: Tj 89 C (Fig. 1) to 112 C (Vf 0.79 V bound), 90 C/W min pad (DS30483 p2-3). One pair set carrying all 1.73 A: 129 C typical, 173 C on the bound | pass balanced; the one-pair-set bound needs cathode copper, #6 |
+| L10 744272251 | 2.8 A rated (dT 40 K) vs 1.73 A = 1.62x; 65 C; rated voltage 80 V | pass |
+| D10 SMBJ58A | VRWM 58 V vs 57 V working; clamps at 93.6 V max | pass (a TVS stand-off isn't derated) |
+| D11 MMDL914 | 100 V vs VC_IN 25 V abs max; 200 mA vs <= 20 mA | pass |
+| C100, C101 | **1 nF 250 V X7R 0603** (Yageo CC0603KRX7RYBB102): 4.4x of 57 V. Were 100 V (1.75x, fail) | fixed |
+| C102 | **0.1 uF 250 V X7R 1206** (Yageo CC1206KKX7RYBB104): 4.4x. Were 100 V 0805. It's the detection cap (0.05-0.12 uF, SLUSCD1C 8.2.2.3 p33), seen at <= 10.1 V where a 250 V part loses little to DC bias | fixed |
+| C103, C104 | 50 V vs VC_IN 25 V / VC_OUT 20 V abs max | 2.0x / 2.5x, pass |
+| C105 VKME1452A101MV | 100 V vs 57 V = 1.75x; ripple at 100 kHz behind the board's input filter ~0.11 A vs 1.04 A | pass (the ripple figure is the board's, wallnode-amp's L40 and C408-C411) |
+| R101 RCLSA, R102 RCLSB | Held at a class event continuously (a PSE stuck in classification), ICLS max (p7) through the resistor: 113 mW / 79 mW. **Vishay CRCW0805, 0.25 W at 70 C** (D/CRCW e3 p1): 45% / 32%. As 0603 (0.125 W) they were 90% / 63% | fixed |
+| R100 | DEN is open-drain above VCL_ON (13 V max, p7, p24): 6.9 mW at most | 5%, pass |
+| R105, R106 | (15 V VC_OUT - 1 V LED)^2 / 5.36k = 37 mW continuous at Class 8 (TPx low) | 30% of CRCW0603, pass |
+| R103, R104, R107, R108 | REF, PG, 3.3 V pull-ups: < 2 mW | pass |
+
+Resistor MPNs are Vishay CRCW (D/CRCW e3 rev 14-Apr-2026); any 1%, 100 ppm thick-film part of the
+same size and at least the same P70 can stand in, but **R101/R102 need 0.25 W in 0805**: most 0805
+parts are 0.125 W, which fails the 50% rule. MLCC MPNs were picked from the JLCPCB/LCSC catalog
+(2026-11-16); their voltage and dielectric are the requirement, the make isn't.
 
 ## 6. Proven on
 
@@ -228,7 +260,7 @@ be regenerated and reviewed line by line.
 | Size | 62 x 45 mm outline (the test project's), parts on the top side only |
 | Copper | F.Cu and B.Cu only, so the block sits on a 2-, 4- or 6-layer board; inner layers are the board's |
 | Flow | bridges (four input rows, PR in the middle of each) -> L10 -> VDD / VSS rails with D10, C102, C101 across them -> U10 -> C105 under U10; the optos straddle the barrier at the top, the secondary strip above them |
-| Power path | 1.0 mm: BR_P / BR_N buses, the PR links, the VDD and VSS rails, RTN to C105 and VDD to C105 (B.Cu). Class 8 is ~1.7 A at the PD (71 W from 42 V); IPC-2221 external, 10 C rise, 1 oz needs ~0.62 mm |
+| Power path | 1.0 mm: BR_P / BR_N buses, the PR links, the VDD and VSS rails, RTN to C105 and VDD to C105 (B.Cu). The worst case is 1.73 A (90 W from 52 V, section 5a); IPC-2221 external, 10 C rise, 1 oz needs ~0.64 mm |
 | U10 | fan-out 0.25-0.3 mm, kept inside the courtyard where the pins are 0.65 mm apart; exposed pad (VSS) to a 168 mm2 POE_VSS pour on B.Cu through the footprint's thermal vias. SLUSCD1C p37 asks for nine thermal vias; the footprint has four (2 x 2, 0.3 mm drill), as on wallnode-amp: an open point for the first board's layout review |
 | Clearances | POE_IN nets (POE_VDD, POE_VSS, BR_P/N, PR12-PR78, VCIN) 0.6 mm (IPC-2221 Table 6-1 B2, 31-150 V), 0.2 mm inside U10's courtyard (B4, under the body); other nets 0.15 mm. In `poe_pd.kicad_dru` and the project's netclasses, the same as wallnode-amp |
 | Isolation barrier | a 6 mm keep-out band (no tracks, vias or pours, F.Cu and B.Cu) under U11 / U12, and a DRC rule: secondary nets (+3V3, GND, POE_TPH_N, POE_TPL_N) keep 6 mm clearance and creepage from everything else. 6 mm is wallnode-amp's moat placeholder until IEC 62368-1 is in the library. Measured: 7.04 mm from the closest secondary copper (the GND link) to primary copper; the FOD817 pads are 7.52 mm apart |

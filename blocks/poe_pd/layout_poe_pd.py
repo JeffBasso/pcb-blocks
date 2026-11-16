@@ -14,8 +14,8 @@
 Every other connection (small signals: DEN, CLSA, CLSB, REF, PG, TPH/TPL, LED drive, VCIN/VCOUT, CONV_SS and
 the secondary side) is left for Freerouting (see BLOCK.md section 9).
 
-Widths: the PD current at Class 8 is ~1.7 A (71 W from 42 V); IPC-2221 external, 10 C rise, 1 oz gives
-~0.62 mm, so the power path is 1.0 mm. Clearances: POE_IN nets 0.6 mm (IPC-2221 Table 6-1 B2, 31-150 V),
+Widths: the worst-case PD current is 1.73 A (90 W from 52 V, BLOCK.md section 5a); IPC-2221 external, 10 C
+rise, 1 oz gives ~0.64 mm, so the power path is 1.0 mm. Clearances: POE_IN nets 0.6 mm (IPC-2221 Table 6-1 B2, 31-150 V),
 0.2 mm inside U10's courtyard (B4 under the part body) - the same rules as wallnode-amp (poe_pd.kicad_dru).
 Barrier: 6 mm, wallnode-amp's moat placeholder until IEC 62368-1 is in the library; the FOD817 pads are
 7.52 mm apart.
@@ -47,7 +47,8 @@ PLACE = {
     'TP40': (34.9, 30.0, 0),
     'U10': (47.0, 24.1, 0),
     'R100': (44.4, 19.4, 0),
-    'R101': (41.6, 30.6, 270), 'R102': (45.7, 29.6, 270), 'R103': (48.0, 29.6, 270),   # signal pad 1 on top
+    # signal pad 1 on top; R101/R102 are 0805 (pcb-blocks#5), R101 set 0.15 mm lower so its pads clear its two vias
+    'R101': (41.6, 30.75, 270), 'R102': (45.7, 29.6, 270), 'R103': (48.0, 29.6, 270),
     'R104': (54.6, 24.1, 0), 'TP41': (55.6, 22.0, 0),
     'C103': (53.2, 28.4, 90), 'C104': (54.8, 28.4, 90), 'D11': (54.0, 31.6, 180),
     # bulk VDD-RTN (PMP20878 C28) under U10: RTN comes round on F.Cu, VDD under the VSS pour on B.Cu;
@@ -178,6 +179,11 @@ def place(board):
         fp.SetOrientationDegrees(rot)
         fp.SetPosition(P(x, y))
         fp.SetLocked(True)
+        # Fields other than Reference and Value (MPN, pcb-blocks#5) arrive from the schematic as visible
+        # F.SilkS text at the footprint origin; they stay as data only.
+        for field in fp.GetFields():
+            if field.GetName() not in ('Reference', 'Value'):
+                field.SetVisible(False)
     missing = {fp.GetReference() for fp in board.GetFootprints()} - set(PLACE)
     if missing:
         raise SystemExit('no position for: ' + ' '.join(sorted(missing)))

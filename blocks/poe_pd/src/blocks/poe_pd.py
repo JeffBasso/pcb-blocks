@@ -22,16 +22,18 @@ import builtins
 from skidl import Net, Part, subcircuit
 
 R_0603 = 'Resistor_SMD:R_0603_1608Metric'
+R_0805 = 'Resistor_SMD:R_0805_2012Metric'
 C_0603 = 'Capacitor_SMD:C_0603_1608Metric'
-C_0805 = 'Capacitor_SMD:C_0805_2012Metric'
+C_1206 = 'Capacitor_SMD:C_1206_3216Metric'
 
 
-def R(ref, value, footprint=R_0603):
-    return Part('Device', 'R', ref=ref, value=value, footprint=footprint)
+def R(ref, value, mpn, footprint=R_0603):
+    return Part('Device', 'R', ref=ref, value=value, footprint=footprint, fields={'MPN': mpn})
 
 
-def C(ref, value, footprint=C_0603):
-    return Part('Device', 'C', ref=ref, value=value, footprint=footprint)
+def C(ref, value, footprint=C_0603, mpn=None):
+    fields = {'MPN': mpn} if mpn else {}
+    return Part('Device', 'C', ref=ref, value=value, footprint=footprint, fields=fields)
 
 
 def no_connect(*pins):
@@ -77,21 +79,22 @@ def poe_pd(PR12, PR36, PR45, PR78, POE_VDD, PRI_RTN, VCIN, VCOUT, CONV_SS,
         br_n += d_lo['2']
 
     # source: PMP20878 C14, L10, C15, D17, C29 (input filter); SLUSCD1C 8.2.2.2 p33 (TVS).
+    # C100-C102 are 250 V (PMP: 100 V): MLCC >= 2 x 57 V working (BLOCK.md section 5, pcb-blocks#5).
     l10 = Part('Device', 'L_Coupled', ref='L10', value='250uH 744272251',
                footprint='Inductor_SMD:L_CommonModeChoke_Wuerth_WE-SL5')
     br_p += l10['2']
     br_n += l10['3']
     POE_VDD += l10['1']
     poe_vss += l10['4']
-    c100 = C('C100', '1nF/100V')
+    c100 = C('C100', '1nF/250V', mpn='CC0603KRX7RYBB102')
     c100[1, 2] += br_p, br_n
-    c101 = C('C101', '1nF/100V')
+    c101 = C('C101', '1nF/250V', mpn='CC0603KRX7RYBB102')
     c101[1, 2] += POE_VDD, poe_vss
-    c102 = C('C102', '0.1uF/100V', C_0805)
+    c102 = C('C102', '0.1uF/250V', C_1206, mpn='CC1206KKX7RYBB104')
     c102[1, 2] += POE_VDD, poe_vss
     d10 = Part('Device', 'D_Zener', ref='D10', value='SMBJ58A', footprint='Diode_SMD:D_SMB')
     d10[1, 2] += POE_VDD, poe_vss
-    # source: PMP20878 C28 (VDD-RTN bulk). C102 above: SLUSCD1C 8.2.2.3 p33 (0.1 uF 100 V VDD-VSS).
+    # source: PMP20878 C28 (VDD-RTN bulk). C102 above: SLUSCD1C 8.2.2.3 p33 (0.1 uF VDD-VSS).
     c105 = Part('Device', 'C_Polarized', ref='C105', value='100uF/100V VKME1452A101MV',
                 footprint='Capacitor_SMD:CP_Elec_10x14.3')
     c105[1, 2] += POE_VDD, PRI_RTN
@@ -114,18 +117,19 @@ def poe_pd(PR12, PR36, PR45, PR78, POE_VDD, PRI_RTN, VCIN, VCOUT, CONV_SS,
     no_connect(u10['8'], u10['9'], u10['16'], u10['19'])   # AMPS_CTL, MPS_DUTY, UVLO_SEL, BT unused
 
     # source: SLUSCD1C 8.2.2.4 p34 (RDEN 24.9k); Table 1 p18 (Class 8 = RCLSA 63.4R + RCLSB 90.9R,
-    # 62-71 W at the PD, 5 class events).
-    r100 = R('R100', '24.9k 1%')
+    # 62-71 W at the PD, 5 class events). RCLSA/RCLSB are CRCW0805 (0.25 W at 70 C, Vishay D/CRCW e3 p1) so
+    # they pass the 50% rule even held at a class event continuously (ICLS max p7); pcb-blocks#3.
+    r100 = R('R100', '24.9k 1%', 'CRCW060324K9FKEA')
     r100[1, 2] += POE_VDD, den
-    r101 = R('R101', '63.4R 1%')
+    r101 = R('R101', '63.4R 1%', 'CRCW080563R4FKEA', R_0805)
     r101[1, 2] += clsa, poe_vss
-    r102 = R('R102', '90.9R 1% (Class 8)')
+    r102 = R('R102', '90.9R 1% (Class 8)', 'CRCW080590R9FKEA', R_0805)
     r102[1, 2] += clsb, poe_vss
     # source: SLUSCD1C p4 pin table (REF 49.9k 1% to VSS).
-    r103 = R('R103', '49.9k 1%')
+    r103 = R('R103', '49.9k 1%', 'CRCW060349K9FKEA')
     r103[1, 2] += ref, poe_vss
     # source: PMP20878 R66 (PG -> converter SS/SD through 0 ohm).
-    r104 = R('R104', '0R')
+    r104 = R('R104', '0R', 'CRCW06030000Z0EA')
     r104[1, 2] += pg, CONV_SS
     # Test points aren't in the BOM (exclude_from_bom), as their symbols on the drawing.
     tp40 = Part('Connector', 'TestPoint', ref='TP40', value='POE_VSS (primary!)',
@@ -147,11 +151,11 @@ def poe_pd(PR12, PR36, PR45, PR78, POE_VDD, PRI_RTN, VCIN, VCOUT, CONV_SS,
     for opto, led_r, pull, led_a, k, out in (('U11', 'R105', 'R107', tph_led_a, tph, POE_TPH_N),
                                              ('U12', 'R106', 'R108', tpl_led_a, tpl, POE_TPL_N)):
         u = Part('Isolator', 'PC817', ref=opto, value='FOD817AS', footprint='Package_DIP:SMDIP-4_W9.53mm')
-        r_led = R(led_r, '5.36k')
+        r_led = R(led_r, '5.36k', 'CRCW06035K36FKEA')
         r_led[1, 2] += VCOUT, led_a
         u[1, 2] += led_a, k
         u[3, 4] += GND, out
-        r_pu = R(pull, '10k')
+        r_pu = R(pull, '10k', 'CRCW060310K0FKEA')
         r_pu[1, 2] += _3V3, out
 
     pwr_flag(POE_VDD)

@@ -3480,7 +3480,7 @@
 				)
 			)
 		)
-		(property "Value" "0.1uF/100V"
+		(property "Value" "0.1uF/250V"
 			(at 191.682 68.58 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -3490,7 +3490,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
+		(property "Footprint" "Capacitor_SMD:C_1206_3216Metric"
 			(at 112.725 34.29 0)
 			(hide yes)
 			(show_name no)
@@ -3523,6 +3523,17 @@
 				)
 			)
 		)
+		(property "MPN" "CC1206KKX7RYBB104"
+			(at 191.682 68.58 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "523a5e8a-68df-46d9-b3e3-007b6bab3568")
 		)
@@ -3538,6 +3549,7 @@
 			)
 		)
 	)
+
 	(symbol
 		(lib_id "Device:R")
 		(at 410.21 63.5 90)
@@ -3593,6 +3605,17 @@
 		)
 		(property "Description" "Resistor"
 			(at 276.86 63.5 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN" "CRCW06035K36FKEA"
+			(at 410.21 60.96 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -3793,7 +3816,7 @@
 				)
 			)
 		)
-		(property "Value" "1nF/100V"
+		(property "Value" "1nF/250V"
 			(at 177.882 68.58 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -3836,6 +3859,17 @@
 				)
 			)
 		)
+		(property "MPN" "CC0603KRX7RYBB102"
+			(at 177.882 68.58 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "eaf3483c-8042-4454-95da-8a347a3921b8")
 		)
@@ -3851,6 +3885,7 @@
 			)
 		)
 	)
+
 	(symbol
 		(lib_id "Device:R")
 		(at 294.64 80.01 0)
@@ -3906,6 +3941,17 @@
 		)
 		(property "Description" "Resistor"
 			(at 193.04 96.52 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN" "CRCW060349K9FKEA"
+			(at 301.326 81.28 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -4441,7 +4487,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
 			(at 130.302 86.36 90)
 			(hide yes)
 			(show_name no)
@@ -4474,6 +4520,17 @@
 				)
 			)
 		)
+		(property "MPN" "CRCW080563R4FKEA"
+			(at 247.986 81.28 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "8757bc03-a2d8-4872-8557-9360d5609b0c")
 		)
@@ -4489,6 +4546,7 @@
 			)
 		)
 	)
+
 	(symbol
 		(lib_id "Device:R")
 		(at 447.04 57.15 0)
@@ -4553,6 +4611,17 @@
 				)
 			)
 		)
+		(property "MPN" "CRCW060310K0FKEA"
+			(at 450.976 58.42 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "4e1afc68-8c2d-4363-9e49-6261900f8a95")
 		)
@@ -4568,6 +4637,7 @@
 			)
 		)
 	)
+
 	(symbol
 		(lib_id "Device:R")
 		(at 391.16 66.04 90)
@@ -4623,6 +4693,17 @@
 		)
 		(property "Description" "Resistor"
 			(at 246.38 86.36 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN" "CRCW06030000Z0EA"
+			(at 391.16 63.5 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -4756,7 +4837,7 @@
 				)
 			)
 		)
-		(property "Value" "1nF/100V"
+		(property "Value" "1nF/250V"
 			(at 122.002 63.5 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -4790,6 +4871,17 @@
 		)
 		(property "Description" "Unpolarized capacitor"
 			(at 30.48 38.1 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN" "CC0603KRX7RYBB102"
+			(at 122.002 63.5 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -4921,7 +5013,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
 			(at 145.542 99.06 90)
 			(hide yes)
 			(show_name no)
@@ -4945,6 +5037,17 @@
 		)
 		(property "Description" "Resistor"
 			(at 147.32 99.06 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN" "CRCW080590R9FKEA"
+			(at 274.986 81.28 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -5353,6 +5456,17 @@
 				)
 			)
 		)
+		(property "MPN" "CRCW060324K9FKEA"
+			(at 237.826 53.34 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "790f6d29-9807-4f71-83e8-bf47227c0416")
 		)
@@ -5368,6 +5482,7 @@
 			)
 		)
 	)
+
 	(symbol
 		(lib_id "Device:R")
 		(at 410.21 83.82 90)
@@ -5423,6 +5538,17 @@
 		)
 		(property "Description" "Resistor"
 			(at 276.86 83.82 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN" "CRCW06035K36FKEA"
+			(at 410.21 81.28 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -5657,6 +5783,17 @@
 		)
 		(property "Description" "Resistor"
 			(at 335.28 78.74 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN" "CRCW060310K0FKEA"
+			(at 450.976 78.74 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
