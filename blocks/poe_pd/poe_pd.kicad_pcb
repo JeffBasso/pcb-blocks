@@ -162,6 +162,16 @@
 				)
 			)
 		)
+		(property "Footprint" "Capacitor_SMD:C_1206_3216Metric"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(uuid "5a930971-8e1b-45d7-9bde-5e62752a56f6")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(path "/ad098fb4-51ee-5bed-b53f-a31abaca7be1/6f0937b0-4617-4bdf-825b-3ba58c654391")
 		(sheetname "PoE PD")
 		(sheetfile "poe_pd_sheet.kicad_sch")
@@ -301,6 +311,16 @@
 				(font
 					(size 1.27 1.27)
 					(thickness 0.15)
+				)
+			)
+		)
+		(property "Footprint" "Diode_SMD:D_SMB"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(uuid "7abcc705-74f5-4244-9953-c787b24de156")
+			(effects
+				(font
+					(size 1.27 1.27)
 				)
 			)
 		)
@@ -591,6 +611,16 @@
 				(font
 					(size 1.27 1.27)
 					(thickness 0.15)
+				)
+			)
+		)
+		(property "Footprint" "Package_DFN_QFN:QFN-16-1EP_4x4mm_P0.65mm_EP2.15x2.15mm"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(uuid "5747c8c4-936b-4a95-9698-e11a289e0bc7")
+			(effects
+				(font
+					(size 1.27 1.27)
 				)
 			)
 		)
@@ -1155,6 +1185,16 @@
 				)
 			)
 		)
+		(property "Footprint" "Capacitor_SMD:CP_Elec_10x14.3"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(uuid "f21b960b-420c-4514-86be-c00353728d08")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(path "/ad098fb4-51ee-5bed-b53f-a31abaca7be1/cc44e351-fc37-42fa-aa60-66e4f8d229af")
 		(sheetname "PoE PD")
 		(sheetfile "poe_pd_sheet.kicad_sch")
@@ -1586,6 +1626,16 @@
 				)
 			)
 		)
+		(property "Footprint" "Diode_SMD:D_SMB"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(uuid "0bfe899c-13f5-4e8d-8a2f-37200ba24cfb")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(path "/ad098fb4-51ee-5bed-b53f-a31abaca7be1/d3ea642d-4b33-454c-814d-e04b502a9cdb")
 		(sheetname "PoE PD")
 		(sheetfile "poe_pd_sheet.kicad_sch")
@@ -1876,6 +1926,16 @@
 				)
 			)
 		)
+		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(uuid "76291720-5c0a-498c-ba22-2fe612be3a08")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(path "/ad098fb4-51ee-5bed-b53f-a31abaca7be1/c968f04c-d9f4-4a4c-bc03-d0c2a65df82e")
 		(sheetname "PoE PD")
 		(sheetfile "poe_pd_sheet.kicad_sch")
@@ -2027,6 +2087,16 @@
 				(font
 					(size 1.27 1.27)
 					(thickness 0.15)
+				)
+			)
+		)
+		(property "Footprint" "Package_TO_SOT_SMD:LFPAK33"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(uuid "4f8cf6cf-5d18-4010-b7db-2256d4a03af4")
+			(effects
+				(font
+					(size 1.27 1.27)
 				)
 			)
 		)
@@ -2455,6 +2525,16 @@
 				)
 			)
 		)
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(uuid "bde493d3-966d-4844-a0f8-484a8b9f64f9")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(path "/ad098fb4-51ee-5bed-b53f-a31abaca7be1/49ce9c76-adc0-4365-a9d6-3b08e426e6a6")
 		(sheetname "PoE PD")
 		(sheetfile "poe_pd_sheet.kicad_sch")
@@ -2560,7 +2640,7 @@
 				)
 			)
 		)
-		(property "Value" "PSMN075-100MSE"
+		(property "Value" "PSMN040-100MSE"
 			(at 0 2.64 180)
 			(layer "F.Fab")
 			(uuid "4bea1e76-371a-4376-a6eb-ecebdba0efa6")
@@ -2571,7 +2651,7 @@
 				)
 			)
 		)
-		(property "Datasheet" "https://assets.nexperia.com/documents/data-sheet/PSMN075-100MSE.pdf"
+		(property "Datasheet" "https://assets.nexperia.com/documents/data-sheet/PSMN040-100MSE.pdf"
 			(at 0 0 180)
 			(unlocked yes)
 			(layer "F.Fab")
@@ -2584,7 +2664,7 @@
 				)
 			)
 		)
-		(property "Description" "N-channel 100 V 71 mOhm (max, 25 C) MOSFET, LFPAK33 (Nexperia PSMN075-100MSE, 26 Mar 2013)"
+		(property "Description" "N-channel 100 V 36.6 mOhm (max, 25 C) MOSFET, LFPAK33 (Nexperia PSMN040-100MSE, 26 Mar 2013)"
 			(at 0 0 180)
 			(unlocked yes)
 			(layer "F.Fab")
@@ -2597,7 +2677,7 @@
 				)
 			)
 		)
-		(property "MPN" "PSMN075-100MSE"
+		(property "MPN" "PSMN040-100MSE"
 			(at 0 0 180)
 			(layer "F.SilkS")
 			(hide yes)
@@ -2606,6 +2686,16 @@
 				(font
 					(size 1.27 1.27)
 					(thickness 0.15)
+				)
+			)
+		)
+		(property "Footprint" "Package_TO_SOT_SMD:LFPAK33"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(uuid "a79e2576-5436-49aa-b78f-261c3b08be01")
+			(effects
+				(font
+					(size 1.27 1.27)
 				)
 			)
 		)
@@ -3026,6 +3116,16 @@
 				)
 			)
 		)
+		(property "Footprint" "Diode_SMD:D_SOD-123"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(uuid "111865fc-b79a-4c58-b547-0a22c5bc1bbd")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(path "/ad098fb4-51ee-5bed-b53f-a31abaca7be1/a0f7656a-e00a-4702-a8fe-cf822868fed9")
 		(sheetname "PoE PD")
 		(sheetfile "poe_pd_sheet.kicad_sch")
@@ -3269,7 +3369,7 @@
 				)
 			)
 		)
-		(property "Value" "PSMN075-100MSE"
+		(property "Value" "PSMN040-100MSE"
 			(at 0 2.64 180)
 			(layer "F.Fab")
 			(uuid "820f63ba-8f88-4f04-b29a-075caddd3d29")
@@ -3280,7 +3380,7 @@
 				)
 			)
 		)
-		(property "Datasheet" "https://assets.nexperia.com/documents/data-sheet/PSMN075-100MSE.pdf"
+		(property "Datasheet" "https://assets.nexperia.com/documents/data-sheet/PSMN040-100MSE.pdf"
 			(at 0 0 180)
 			(unlocked yes)
 			(layer "F.Fab")
@@ -3293,7 +3393,7 @@
 				)
 			)
 		)
-		(property "Description" "N-channel 100 V 71 mOhm (max, 25 C) MOSFET, LFPAK33 (Nexperia PSMN075-100MSE, 26 Mar 2013)"
+		(property "Description" "N-channel 100 V 36.6 mOhm (max, 25 C) MOSFET, LFPAK33 (Nexperia PSMN040-100MSE, 26 Mar 2013)"
 			(at 0 0 180)
 			(unlocked yes)
 			(layer "F.Fab")
@@ -3306,7 +3406,7 @@
 				)
 			)
 		)
-		(property "MPN" "PSMN075-100MSE"
+		(property "MPN" "PSMN040-100MSE"
 			(at 0 0 180)
 			(layer "F.SilkS")
 			(hide yes)
@@ -3315,6 +3415,16 @@
 				(font
 					(size 1.27 1.27)
 					(thickness 0.15)
+				)
+			)
+		)
+		(property "Footprint" "Package_TO_SOT_SMD:LFPAK33"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(uuid "2f5547b2-1781-4b64-adb1-6fbc52124d2f")
+			(effects
+				(font
+					(size 1.27 1.27)
 				)
 			)
 		)
@@ -3743,6 +3853,16 @@
 				)
 			)
 		)
+		(property "Footprint" "Capacitor_SMD:C_1206_3216Metric"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(uuid "a3965690-1633-4151-8928-5467909dbcb2")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(path "/ad098fb4-51ee-5bed-b53f-a31abaca7be1/db90264c-1e85-479b-afe1-58de402a0a85")
 		(sheetname "PoE PD")
 		(sheetfile "poe_pd_sheet.kicad_sch")
@@ -3885,6 +4005,16 @@
 				)
 			)
 		)
+		(property "Footprint" "TestPoint:TestPoint_Pad_D1.5mm"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(uuid "49ad1d7d-b73b-4483-bda2-fab53fe8f284")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(path "/ad098fb4-51ee-5bed-b53f-a31abaca7be1/28551276-1417-4da6-9f96-a57b49159042")
 		(sheetname "PoE PD")
 		(sheetfile "poe_pd_sheet.kicad_sch")
@@ -3984,6 +4114,16 @@
 				(font
 					(size 1.27 1.27)
 					(thickness 0.15)
+				)
+			)
+		)
+		(property "Footprint" "Inductor_SMD:L_CommonModeChoke_Wuerth_WE-SL5"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(uuid "64758f60-0a64-47ef-a63a-f2282369a2ca")
+			(effects
+				(font
+					(size 1.27 1.27)
 				)
 			)
 		)
@@ -4216,7 +4356,7 @@
 				)
 			)
 		)
-		(property "Value" "PSMN075-100MSE"
+		(property "Value" "PSMN040-100MSE"
 			(at 0 2.64 180)
 			(layer "F.Fab")
 			(uuid "8d92d276-2f83-432b-a172-878a9e67ec26")
@@ -4227,7 +4367,7 @@
 				)
 			)
 		)
-		(property "Datasheet" "https://assets.nexperia.com/documents/data-sheet/PSMN075-100MSE.pdf"
+		(property "Datasheet" "https://assets.nexperia.com/documents/data-sheet/PSMN040-100MSE.pdf"
 			(at 0 0 180)
 			(unlocked yes)
 			(layer "F.Fab")
@@ -4240,7 +4380,7 @@
 				)
 			)
 		)
-		(property "Description" "N-channel 100 V 71 mOhm (max, 25 C) MOSFET, LFPAK33 (Nexperia PSMN075-100MSE, 26 Mar 2013)"
+		(property "Description" "N-channel 100 V 36.6 mOhm (max, 25 C) MOSFET, LFPAK33 (Nexperia PSMN040-100MSE, 26 Mar 2013)"
 			(at 0 0 180)
 			(unlocked yes)
 			(layer "F.Fab")
@@ -4253,7 +4393,7 @@
 				)
 			)
 		)
-		(property "MPN" "PSMN075-100MSE"
+		(property "MPN" "PSMN040-100MSE"
 			(at 0 0 180)
 			(layer "F.SilkS")
 			(hide yes)
@@ -4262,6 +4402,16 @@
 				(font
 					(size 1.27 1.27)
 					(thickness 0.15)
+				)
+			)
+		)
+		(property "Footprint" "Package_TO_SOT_SMD:LFPAK33"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(uuid "fc5829be-72ff-4219-b2f0-7bbac3ae58d1")
+			(effects
+				(font
+					(size 1.27 1.27)
 				)
 			)
 		)
@@ -4633,7 +4783,7 @@
 				)
 			)
 		)
-		(property "Value" "PSMN075-100MSE"
+		(property "Value" "PSMN040-100MSE"
 			(at 0 2.64 180)
 			(layer "F.Fab")
 			(uuid "311fcc32-d6a1-419c-ba44-c2d206158492")
@@ -4644,7 +4794,7 @@
 				)
 			)
 		)
-		(property "Datasheet" "https://assets.nexperia.com/documents/data-sheet/PSMN075-100MSE.pdf"
+		(property "Datasheet" "https://assets.nexperia.com/documents/data-sheet/PSMN040-100MSE.pdf"
 			(at 0 0 180)
 			(unlocked yes)
 			(layer "F.Fab")
@@ -4657,7 +4807,7 @@
 				)
 			)
 		)
-		(property "Description" "N-channel 100 V 71 mOhm (max, 25 C) MOSFET, LFPAK33 (Nexperia PSMN075-100MSE, 26 Mar 2013)"
+		(property "Description" "N-channel 100 V 36.6 mOhm (max, 25 C) MOSFET, LFPAK33 (Nexperia PSMN040-100MSE, 26 Mar 2013)"
 			(at 0 0 180)
 			(unlocked yes)
 			(layer "F.Fab")
@@ -4670,7 +4820,7 @@
 				)
 			)
 		)
-		(property "MPN" "PSMN075-100MSE"
+		(property "MPN" "PSMN040-100MSE"
 			(at 0 0 180)
 			(layer "F.SilkS")
 			(hide yes)
@@ -4679,6 +4829,16 @@
 				(font
 					(size 1.27 1.27)
 					(thickness 0.15)
+				)
+			)
+		)
+		(property "Footprint" "Package_TO_SOT_SMD:LFPAK33"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(uuid "3c122df3-c485-4e53-bbb5-a9bd72f06477")
+			(effects
+				(font
+					(size 1.27 1.27)
 				)
 			)
 		)
@@ -5107,6 +5267,16 @@
 				)
 			)
 		)
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(uuid "cac8c14d-8f57-45da-af52-c1805e0ec1e3")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(path "/ad098fb4-51ee-5bed-b53f-a31abaca7be1/bce3c174-1f81-4196-81a0-dc49e5ec7fee")
 		(sheetname "PoE PD")
 		(sheetfile "poe_pd_sheet.kicad_sch")
@@ -5212,7 +5382,7 @@
 				)
 			)
 		)
-		(property "Value" "PSMN075-100MSE"
+		(property "Value" "PSMN040-100MSE"
 			(at 0 2.64 180)
 			(layer "F.Fab")
 			(uuid "1b0fd63c-b042-46b4-867f-c9d270e3c28c")
@@ -5223,7 +5393,7 @@
 				)
 			)
 		)
-		(property "Datasheet" "https://assets.nexperia.com/documents/data-sheet/PSMN075-100MSE.pdf"
+		(property "Datasheet" "https://assets.nexperia.com/documents/data-sheet/PSMN040-100MSE.pdf"
 			(at 0 0 180)
 			(unlocked yes)
 			(layer "F.Fab")
@@ -5236,7 +5406,7 @@
 				)
 			)
 		)
-		(property "Description" "N-channel 100 V 71 mOhm (max, 25 C) MOSFET, LFPAK33 (Nexperia PSMN075-100MSE, 26 Mar 2013)"
+		(property "Description" "N-channel 100 V 36.6 mOhm (max, 25 C) MOSFET, LFPAK33 (Nexperia PSMN040-100MSE, 26 Mar 2013)"
 			(at 0 0 180)
 			(unlocked yes)
 			(layer "F.Fab")
@@ -5249,7 +5419,7 @@
 				)
 			)
 		)
-		(property "MPN" "PSMN075-100MSE"
+		(property "MPN" "PSMN040-100MSE"
 			(at 0 0 180)
 			(layer "F.SilkS")
 			(hide yes)
@@ -5258,6 +5428,16 @@
 				(font
 					(size 1.27 1.27)
 					(thickness 0.15)
+				)
+			)
+		)
+		(property "Footprint" "Package_TO_SOT_SMD:LFPAK33"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(uuid "62353a66-cc2f-4977-9db7-a94ba5d67e7d")
+			(effects
+				(font
+					(size 1.27 1.27)
 				)
 			)
 		)
@@ -5629,7 +5809,7 @@
 				)
 			)
 		)
-		(property "Value" "PSMN075-100MSE"
+		(property "Value" "PSMN040-100MSE"
 			(at 0 2.64 180)
 			(layer "F.Fab")
 			(uuid "916c90a6-7e04-4a12-9eed-aa2769e8b6a3")
@@ -5640,7 +5820,7 @@
 				)
 			)
 		)
-		(property "Datasheet" "https://assets.nexperia.com/documents/data-sheet/PSMN075-100MSE.pdf"
+		(property "Datasheet" "https://assets.nexperia.com/documents/data-sheet/PSMN040-100MSE.pdf"
 			(at 0 0 180)
 			(unlocked yes)
 			(layer "F.Fab")
@@ -5653,7 +5833,7 @@
 				)
 			)
 		)
-		(property "Description" "N-channel 100 V 71 mOhm (max, 25 C) MOSFET, LFPAK33 (Nexperia PSMN075-100MSE, 26 Mar 2013)"
+		(property "Description" "N-channel 100 V 36.6 mOhm (max, 25 C) MOSFET, LFPAK33 (Nexperia PSMN040-100MSE, 26 Mar 2013)"
 			(at 0 0 180)
 			(unlocked yes)
 			(layer "F.Fab")
@@ -5666,7 +5846,7 @@
 				)
 			)
 		)
-		(property "MPN" "PSMN075-100MSE"
+		(property "MPN" "PSMN040-100MSE"
 			(at 0 0 180)
 			(layer "F.SilkS")
 			(hide yes)
@@ -5675,6 +5855,16 @@
 				(font
 					(size 1.27 1.27)
 					(thickness 0.15)
+				)
+			)
+		)
+		(property "Footprint" "Package_TO_SOT_SMD:LFPAK33"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(uuid "61018bfb-bf2b-4189-a9c8-2d3dfa69fea9")
+			(effects
+				(font
+					(size 1.27 1.27)
 				)
 			)
 		)
@@ -6103,6 +6293,16 @@
 				)
 			)
 		)
+		(property "Footprint" "Package_DFN_QFN:DFN-10-1EP_3x3mm_P0.5mm_EP1.65x2.38mm"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(uuid "672b8461-623b-4527-82f0-5c3efbec7f0a")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(path "/ad098fb4-51ee-5bed-b53f-a31abaca7be1/8d1e9a96-cfd2-4153-8819-46c1c1dda15d")
 		(sheetname "PoE PD")
 		(sheetfile "poe_pd_sheet.kicad_sch")
@@ -6471,7 +6671,7 @@
 				)
 			)
 		)
-		(property "Value" "PSMN075-100MSE"
+		(property "Value" "PSMN040-100MSE"
 			(at 0 2.64 180)
 			(layer "F.Fab")
 			(uuid "b76d933c-05de-434c-a385-7063c0adc154")
@@ -6482,7 +6682,7 @@
 				)
 			)
 		)
-		(property "Datasheet" "https://assets.nexperia.com/documents/data-sheet/PSMN075-100MSE.pdf"
+		(property "Datasheet" "https://assets.nexperia.com/documents/data-sheet/PSMN040-100MSE.pdf"
 			(at 0 0 180)
 			(unlocked yes)
 			(layer "F.Fab")
@@ -6495,7 +6695,7 @@
 				)
 			)
 		)
-		(property "Description" "N-channel 100 V 71 mOhm (max, 25 C) MOSFET, LFPAK33 (Nexperia PSMN075-100MSE, 26 Mar 2013)"
+		(property "Description" "N-channel 100 V 36.6 mOhm (max, 25 C) MOSFET, LFPAK33 (Nexperia PSMN040-100MSE, 26 Mar 2013)"
 			(at 0 0 180)
 			(unlocked yes)
 			(layer "F.Fab")
@@ -6508,7 +6708,7 @@
 				)
 			)
 		)
-		(property "MPN" "PSMN075-100MSE"
+		(property "MPN" "PSMN040-100MSE"
 			(at 0 0 180)
 			(layer "F.SilkS")
 			(hide yes)
@@ -6517,6 +6717,16 @@
 				(font
 					(size 1.27 1.27)
 					(thickness 0.15)
+				)
+			)
+		)
+		(property "Footprint" "Package_TO_SOT_SMD:LFPAK33"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(uuid "98b82f61-b752-4602-a363-82ff6cb7bbc7")
+			(effects
+				(font
+					(size 1.27 1.27)
 				)
 			)
 		)
@@ -6945,6 +7155,16 @@
 				)
 			)
 		)
+		(property "Footprint" "Capacitor_SMD:C_1206_3216Metric"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(uuid "496fe176-f4c9-4596-8d78-68dde62c82ca")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(path "/ad098fb4-51ee-5bed-b53f-a31abaca7be1/cf87bd83-651c-4501-9f57-76b75071c056")
 		(sheetname "PoE PD")
 		(sheetfile "poe_pd_sheet.kicad_sch")
@@ -7092,6 +7312,16 @@
 				(font
 					(size 1 1)
 					(thickness 0.15)
+				)
+			)
+		)
+		(property "Footprint" "Package_DIP:SMDIP-4_W9.53mm"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(uuid "c6baca8e-6f48-46a3-89ad-34b2b9d1825f")
+			(effects
+				(font
+					(size 1.27 1.27)
 				)
 			)
 		)
@@ -7302,7 +7532,7 @@
 				)
 			)
 		)
-		(property "Value" "PSMN075-100MSE"
+		(property "Value" "PSMN040-100MSE"
 			(at 0 2.64 180)
 			(layer "F.Fab")
 			(uuid "55a1291a-eb75-4088-aec3-c5d75cb5ac97")
@@ -7313,7 +7543,7 @@
 				)
 			)
 		)
-		(property "Datasheet" "https://assets.nexperia.com/documents/data-sheet/PSMN075-100MSE.pdf"
+		(property "Datasheet" "https://assets.nexperia.com/documents/data-sheet/PSMN040-100MSE.pdf"
 			(at 0 0 180)
 			(unlocked yes)
 			(layer "F.Fab")
@@ -7326,7 +7556,7 @@
 				)
 			)
 		)
-		(property "Description" "N-channel 100 V 71 mOhm (max, 25 C) MOSFET, LFPAK33 (Nexperia PSMN075-100MSE, 26 Mar 2013)"
+		(property "Description" "N-channel 100 V 36.6 mOhm (max, 25 C) MOSFET, LFPAK33 (Nexperia PSMN040-100MSE, 26 Mar 2013)"
 			(at 0 0 180)
 			(unlocked yes)
 			(layer "F.Fab")
@@ -7339,7 +7569,7 @@
 				)
 			)
 		)
-		(property "MPN" "PSMN075-100MSE"
+		(property "MPN" "PSMN040-100MSE"
 			(at 0 0 180)
 			(layer "F.SilkS")
 			(hide yes)
@@ -7348,6 +7578,16 @@
 				(font
 					(size 1.27 1.27)
 					(thickness 0.15)
+				)
+			)
+		)
+		(property "Footprint" "Package_TO_SOT_SMD:LFPAK33"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(uuid "f73c4e51-f52b-447d-bd87-39466eb618e5")
+			(effects
+				(font
+					(size 1.27 1.27)
 				)
 			)
 		)
@@ -7776,6 +8016,16 @@
 				)
 			)
 		)
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(uuid "3bc65435-1520-418c-a7f8-b39542cff69c")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(path "/ad098fb4-51ee-5bed-b53f-a31abaca7be1/e8f2e7dd-2dc0-4e55-b063-1b6e39ccc879")
 		(sheetname "PoE PD")
 		(sheetfile "poe_pd_sheet.kicad_sch")
@@ -7918,6 +8168,16 @@
 				)
 			)
 		)
+		(property "Footprint" "TestPoint:TestPoint_Pad_D1.0mm"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(uuid "5becc07d-8349-4ad8-9e32-258b786030b3")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(path "/ad098fb4-51ee-5bed-b53f-a31abaca7be1/b9f1b33a-5c00-4be7-ab9c-5a025fb7d28e")
 		(sheetname "PoE PD")
 		(sheetfile "poe_pd_sheet.kicad_sch")
@@ -8037,6 +8297,16 @@
 				(font
 					(size 1.27 1.27)
 					(thickness 0.15)
+				)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_1206_3216Metric"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(uuid "065c3570-2013-4f15-9b11-f675ce33b03d")
+			(effects
+				(font
+					(size 1.27 1.27)
 				)
 			)
 		)
@@ -8202,6 +8472,16 @@
 				)
 			)
 		)
+		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(uuid "b7bb7306-428b-4d1a-9b7e-004cf354edb8")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(path "/ad098fb4-51ee-5bed-b53f-a31abaca7be1/7fd63465-a06b-4166-9067-ebab1bb22b9a")
 		(sheetname "PoE PD")
 		(sheetfile "poe_pd_sheet.kicad_sch")
@@ -8364,6 +8644,16 @@
 				)
 			)
 		)
+		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(uuid "6dc83645-f4b8-4ecb-92a4-e7093be744d8")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(path "/ad098fb4-51ee-5bed-b53f-a31abaca7be1/db7024ca-a619-4097-8ea4-324155fb9828")
 		(sheetname "PoE PD")
 		(sheetfile "poe_pd_sheet.kicad_sch")
@@ -8523,6 +8813,16 @@
 				(font
 					(size 1.27 1.27)
 					(thickness 0.15)
+				)
+			)
+		)
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(uuid "9e6ad437-97fa-4c76-86ad-dc780e96e45e")
+			(effects
+				(font
+					(size 1.27 1.27)
 				)
 			)
 		)

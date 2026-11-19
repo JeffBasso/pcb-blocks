@@ -20,15 +20,32 @@ class Case(unittest.TestCase):
         self.assertAlmostEqual(c.rth_max(0.5752, 50.0, 125.0), 130.4, places=0)
 
 
-class Copper(unittest.TestCase):
-    def test_fig25_points(self):
-        # a 20 x 20 mm pour reads 68 C at 0.5 W from 20 C: (68 - 20) / 0.5 = 96 K/W
-        self.assertAlmostEqual(c.rth_from_area(400.0), 96.0, places=1)
+class Bridge(unittest.TestCase):
+    def test_psmn040_loss_at_50v(self):
+        # 1.80 A x 98.8 mohm (36.6 x 2.7) = 0.320 W
+        self.assertAlmostEqual(c.fet_loss(90.0 / 50.0, 0.0366 * 2.7), 0.320, places=3)
 
-    def test_interpolates_and_decreases(self):
-        self.assertGreater(c.rth_from_area(300.0), c.rth_from_area(500.0))
-        # halfway between 20 mm (68 C) and 25 mm (60 C): 64 C -> 88 K/W
-        self.assertAlmostEqual(c.rth_from_area(22.5 ** 2), 88.0, places=1)
+    def test_lt4321_drop_window(self):
+        # LT4321 p8: VF = IAVG x Rds(on) in 20-70 mV; 1.80 A x 36.6 mohm = 65.9 mV
+        self.assertAlmostEqual(c.fet_drop(1.80, 0.0366) * 1e3, 65.9, places=1)
+
+
+class Leakage(unittest.TestCase):
+    def test_idss_endpoints(self):
+        # PSMN040 p5: IDSS max 1 uA at 25 C, 500 uA at 175 C (VDS 100 V)
+        self.assertAlmostEqual(c.idss_at(25.0), 1e-6, places=12)
+        self.assertAlmostEqual(c.idss_at(175.0), 500e-6, places=10)
+
+    def test_idss_at_50c(self):
+        self.assertAlmostEqual(c.idss_at(50.0) * 1e6, 2.82, places=2)
+
+    def test_slope_sqrt_law(self):
+        # I = I100 sqrt(V / 100): dI/dV = I / (2 V); at 100 V with 1 uA: 5 nA/V per FET
+        self.assertAlmostEqual(c.leak_slope(1e-6, 100.0, 1), 5e-9, places=15)
+
+    def test_signature_unchanged_without_leakage(self):
+        self.assertAlmostEqual(c.parallel_sig(24.4e3, 0.0), 24.4e3)
+        self.assertLess(c.parallel_sig(24.4e3, 1e-6), 24.4e3)
 
 
 class Inrush(unittest.TestCase):

@@ -2,8 +2,8 @@
 """poe_pd: IEEE 802.3bt PoE powered-device front end (pcb-blocks, CERN-OHL-P-2.0).
 
 ADI's DC2583A design (Ethernet Alliance-certified 802.3bt PD): an LT4321 ideal-diode bridge with eight
-PSMN075-100MSE FETs, an input common-mode choke and TVS, and an LT4294 PD controller driving a
-PSMN040-100MSE high-side hot-swap FET, set for Class 8. One FOD817AS optocoupler carries the LT4294's
+PSMN040-100MSE FETs (DC2583A: PSMN075-100MSE), an input common-mode choke and TVS, and an LT4294 PD
+controller driving a PSMN040-100MSE high-side hot-swap FET, set for Class 8. One FOD817AS optocoupler carries the LT4294's
 T2P power-grant output (PWM-coded) across the isolation barrier. Every part is rated for continuous 90 W
 at the PD (1.73 A from a 52 V Type 4 port on a short cable, one pair set carrying all of it). The drawn
 sheet is the KiCad 10 design block pcb-blocks.kicad_blocks/poe_pd.kicad_block; tools/check-blocks.ps1
@@ -87,8 +87,9 @@ def poe_pd(PR12, PR36, PR45, PR78, POE_VDD, POE_VSS, PD_PWRGD, POE_T2P_N, _3V3, 
 
     # source: LT4294 Rev B p16 (typical application) and DC2583A Rev A p9 (Q3-Q10, U2): the LT4321
     # ideal-diode bridge. Top FETs: drain to OUTP, source to the pair; bottom FETs: source to OUTN,
-    # drain to the pair (LT4321 Rev A p5 pin functions). PSMN075-100MSE, 100 V (LT4321 p8: >= 100 V,
-    # VGS(th) >= 2 V).
+    # drain to the pair (LT4321 Rev A p5 pin functions). PSMN040-100MSE, 100 V (LT4321 p8: >= 100 V,
+    # VGS(th) >= 2 V). DC2583A uses PSMN075-100MSE; PSMN040 (36.6 mohm max, p5) keeps LT4321 p8's 20-70 mV
+    # drop at 1.80 A (66 mV, not 128 mV) and halves the loss (Jeff, Ion-Speakers#15, 2026-11-19).
     # pcb-blocks:LT4321 is KiCad's Power_Management:LT4321xUF with EN/~EN typed input and the stacked
     # OUTN pin split into 9 (OUTN) and 17 (EP), checked against LT4321 Rev A p2/p5.
     u12 = Part('pcb-blocks', 'LT4321', ref='U12', value='LT4321HUF#PBF',
@@ -102,11 +103,11 @@ def poe_pd(PR12, PR36, PR45, PR78, POE_VDD, POE_VSS, PD_PWRGD, POE_T2P_N, _3V3, 
         pair += u12[inp]
         n_tg += u12[tg]
         n_bg += u12[bg]
-        qt = nfet(top, 'PSMN075-100MSE')
+        qt = nfet(top, 'PSMN040-100MSE')
         pair += qt['1'], qt['2'], qt['3']
         n_tg += qt['4']
         br_p += qt['5']
-        qb = nfet(bot, 'PSMN075-100MSE')
+        qb = nfet(bot, 'PSMN040-100MSE')
         br_n += qb['1'], qb['2'], qb['3']
         n_bg += qb['4']
         pair += qb['5']
