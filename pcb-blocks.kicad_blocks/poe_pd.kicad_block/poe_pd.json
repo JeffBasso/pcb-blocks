@@ -1,10 +1,10 @@
 {
-  "description": "IEEE 802.3bt PoE PD front end: two PDS5100 Schottky bridges, CM choke and SMBJ58A TVS, TPS2373-4 (Class 8 strapped, up to 71 W at the PD), TPH/TPL over FOD817AS optocouplers. Drawn and parity-checked; not yet bench-proven. No compliance certification claimed.",
-  "keywords": "PoE PD 802.3bt TPS2373",
+  "description": "IEEE 802.3bt PoE PD front end (ADI DC2583A design): LT4321 ideal-diode bridge with 8 x PSMN075-100MSE, CM choke and SMBJ58A TVS, LT4294 (Class 8) with a PSMN040-100MSE high-side hot-swap FET, T2P power grant over one FOD817AS optocoupler. Rated for continuous 90 W at the PD. No PD current limit. Drawn and parity-checked; not yet bench-proven. No compliance certification claimed.",
+  "keywords": "PoE PD 802.3bt LT4294 LT4321 ideal bridge",
   "fields": {
     "License": "CERN-OHL-P-2.0",
     "Source": "https://github.com/JeffBasso/pcb-blocks/tree/main/blocks/poe_pd",
     "Status": "not yet bench-proven",
-    "Layout": "F.Cu/B.Cu, 62 x 45 mm, 6 mm isolation barrier under the optos (BLOCK.md section 9)"
+    "Layout": "F.Cu/B.Cu, 130 x 74 mm, FET copper sized for 90 W, 6 mm isolation barrier under the opto (BLOCK.md section 9)"
   }
 }

@@ -72,10 +72,10 @@ Describe 'check-blocks.ps1' {
     It 'fails when the Python and the drawing disagree' {
         $d = New-RepoCopy
         $py = Join-Path $d 'blocks\poe_pd\src\blocks\poe_pd.py'
-        (Get-Content -Raw -LiteralPath $py) -replace "'24\.9k 1%'", "'25.5k 1%'" | Set-Content -LiteralPath $py -NoNewline
+        (Get-Content -Raw -LiteralPath $py) -replace "'49\.9R 1%'", "'51.1R 1%'" | Set-Content -LiteralPath $py -NoNewline
         $r = Invoke-Check $d
         $r.Code | Should -Be 1
-        $r.Out | Should -Match "R100 value: '25\.5k 1%' in Python"
+        $r.Out | Should -Match "R101 value: '51\.1R 1%' in Python"
         $r.Out | Should -Match 'poe_pd: parity FAILED'
     }
 }

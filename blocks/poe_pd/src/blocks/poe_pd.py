@@ -146,7 +146,7 @@ def poe_pd(PR12, PR36, PR45, PR78, POE_VDD, POE_VSS, PD_PWRGD, POE_T2P_N, _3V3, 
 
     # source: LT4294 Rev B p2/p5 (pinout), p16 (typical application), DC2583A p8 (U1).
     u10 = Part('pcb-blocks', 'LT4294', ref='U10', value='LT4294HDD#PBF',
-               footprint='Package_DFN_QFN:DFN-10-1EP_3x3mm_P0.5mm_EP1.65x2.38mm_ThermalVias',
+               footprint='Package_DFN_QFN:DFN-10-1EP_3x3mm_P0.5mm_EP1.65x2.38mm',
                fields={'MPN': 'LT4294HDD#PBF'})
     vpin += u10['10']
     POE_VSS += u10['1'], u10['5'], u10['11']

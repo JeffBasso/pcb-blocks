@@ -30,3 +30,12 @@ U12 LT4321HUF                           0.8 mA x 57 V (p3)                      
 U10 LT4294HDD                           2 mA x 57 V (p3); up to 1.5 W during classification, thermally protected (p10)          114 mW in operation                                          PASS
 
 Front-end FET loss, worst case: 2 x 0.575 + 0.296 = 1.45 W (1.6% of 90 W); L10 DCR adds ~0.2 W.
+
+Board copper per FET (AN90003 Rev 5.0 Fig. 25, 0.5 W curve; loss at 175 C Rds(on), 50 V row; 50 C air; limits: Tj 125 C design, PCB 120 C):
+  Q50-Q53 top FETs (tab on the BR_P strip, shared; one conducts): 2099 mm2 (~46 mm square), Rth ~51 K/W, 0.622 W -> Tj ~81 C  PASS
+  Q55 bottom FET, row 36 (worst row: F.Cu split by the BR_P riser, B.Cu by the PR12 sense): 413 mm2 (~20 mm square), Rth ~95 K/W, 0.622 W -> Tj ~109 C  PASS
+  Q54 bottom FET, row 12: 674 mm2 (~26 mm square), Rth ~77 K/W, 0.622 W -> Tj ~98 C  PASS
+  Q56 bottom FET, row 45: 760 mm2 (~28 mm square), Rth ~73 K/W, 0.622 W -> Tj ~95 C  PASS
+  Q57 bottom FET, row 78: 1035 mm2 (~32 mm square), Rth ~63 K/W, 0.622 W -> Tj ~89 C  PASS
+  Q58 hot-swap FET (tab on the VPORT band): 705 mm2 (~27 mm square), Rth ~76 K/W, 0.320 W -> Tj ~74 C  PASS
+  Fig. 25 is 2 oz on one layer; the block has 1 oz on two stitched layers of the same outline, so the summed area is a judgement (re-check with kit #428 and an IR picture at the highest grant, BRINGUP.md).

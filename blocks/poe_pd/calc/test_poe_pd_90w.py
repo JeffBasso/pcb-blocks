@@ -20,6 +20,17 @@ class Case(unittest.TestCase):
         self.assertAlmostEqual(c.rth_max(0.5752, 50.0, 125.0), 130.4, places=0)
 
 
+class Copper(unittest.TestCase):
+    def test_fig25_points(self):
+        # a 20 x 20 mm pour reads 68 C at 0.5 W from 20 C: (68 - 20) / 0.5 = 96 K/W
+        self.assertAlmostEqual(c.rth_from_area(400.0), 96.0, places=1)
+
+    def test_interpolates_and_decreases(self):
+        self.assertGreater(c.rth_from_area(300.0), c.rth_from_area(500.0))
+        # halfway between 20 mm (68 C) and 25 mm (60 C): 64 C -> 88 K/W
+        self.assertAlmostEqual(c.rth_from_area(22.5 ** 2), 88.0, places=1)
+
+
 class Inrush(unittest.TestCase):
     def test_lt4294_example(self):
         # LT4294 p8: IINRUSH = IGPU * CPORT / CGATE; 22 uA, 22 uF, 47 nF -> ~10 mA

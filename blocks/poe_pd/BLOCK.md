@@ -5,92 +5,102 @@
 **Drawn and parity-checked; not yet bench-proven. No compliance certification (IEEE 802.3bt,
 safety or EMC) is claimed.**
 
-The drawing was reviewed at GATE 3 as part of wallnode-amp rev A, and that board hasn't been built
-yet. Treat every value here as a reviewed design, not a measured one, until [BRINGUP.md](BRINGUP.md)
-has rows.
+Rev B of the block (2026-11-19, Ion-Speakers#15): ADI's LT4294 + LT4321 design (DC2583A), which replaces
+rev A's TPS2373-4 and Schottky bridges. Jeff picked it after rev A's TPS2373-4 came out at 94% of its
+current rating at 90 W, and its Schottky bridge at 173 C on the one-pair-set bound (Ion-Speakers PR #20 and
+#15). Rev B is a reviewed design, not a measured one, until [BRINGUP.md](BRINGUP.md) has rows. ADI's
+DC2583A is Ethernet Alliance-certified; this block is not, and it adds a common-mode choke DC2583A
+doesn't have (section 5).
 
-One difference from that drawing: the block is strapped for Class 8 (R102 90.9R), where wallnode-amp
-rev A is still strapped for Class 6 (249R).
-
-The block has a PCB layout (section 9). It was made headless by script, DRC-clean in the block's test
-project, and hasn't been built or compared with another layout yet.
+The block has a PCB layout (section 9): scripted, DRC-clean in the block's test project, with the FET copper
+sized for the 90 W worst case. It hasn't been built.
 
 ## 2. What it is
 
-The PD side of a PoE port, from the magnetics' centre taps to the DC-DC converter's input:
+The PD side of a PoE port, from the magnetics' centre taps to the load's input:
 
-- two full bridges of PDS5100 Schottky diodes (D50-D57), one per pair set, so both 2-pair and
-  4-pair PSEs work;
-- an input common-mode choke (Würth 744272251, L10) with 1 nF caps either side, an SMBJ58A TVS (D10)
-  and 0.1 uF across VDD-VSS;
-- a TPS2373-4 (U10) for detection (24.9k), classification and the internal hot-swap FET. It's
-  strapped for **Class 8**, the 802.3bt maximum: RCLSA (R101) 63.4R and RCLSB (R102) 90.9R give
-  62-71 W at the PD after 5 class events (SLUSCD1C Table 1 p18). Every part is rated for
-  **continuous 90 W at the PD** (the full Class 8 PSE budget on a short cable), section 5a. A board
-  that wants less fits a bigger RCLSB from the same table (249R = Class 6);
-- the VC_IN/VC_OUT bias (D11, C103, C104), and PG held through 0R (R104) to the converter's
-  soft-start;
-- TPH and TPL carried across the isolation barrier by two FOD817AS optocouplers (U11, U12), with
-  10k pull-ups to the isolated 3.3 V;
-- two test points on the primary side, TP40 (POE_VSS) and TP41 (PD_PG), which aren't in the BOM.
+- an **LT4321 ideal-diode bridge** (U12) with eight **PSMN075-100MSE** FETs (Q50-Q57), so 2-pair and
+  4-pair PSEs work without diode drops;
+- an input common-mode choke (Würth 744272251, L10, from TI's PMP20878) with 1 nF caps either side.
+  Because the choke sits between the bridge and the controller, the LT4321 is enabled by a 24 V Zener
+  from VPORT+ (D13, LT4321 Fig. 5). There's a TVS at each IC (D12 at the LT4321, D10 at the LT4294) and
+  a 47 nF CPD cap at each (C103, C102);
+- an **LT4294** PD controller (U10), strapped for **Class 8** (RCLS 49.9R, RCLS++ 118R: 71.3 W at the PD
+  after 5 class events, LT4294 Table 2 p7). It drives a **PSMN040-100MSE high-side hot-swap FET** (Q58).
+  CGATE (47 nF + 3.3k, C104/R103) sets the inrush current, and PWRGD holds the load off until inrush is done;
+- the **T2P** power-grant output carried across the isolation barrier by one FOD817AS optocoupler (U11),
+  its LED fed from POE_VDD through 33k (R105), with a 10k pull-up (R106) to the isolated 3.3 V;
+- the output bulk cap C105 (100 uF 100 V);
+- two test points on the primary side, TP40 (POE_VSS) and TP41 (PD_PWRGD), which aren't in the BOM.
+
+Every part is rated for **continuous 90 W at the PD** (section 5a).
+
+**There is no PD current limit.** The LT4294 has none: it limits inrush only. A short after Q58 is cleared
+by the PSE's port current limit and by the load's own limit (on wallnode-amp, the UCC2897A's cycle-by-cycle
+limit). A board that splits POE_VDD into several outputs must limit each output itself, with an eFuse or
+similar on that board, not in this block. The planned PoE wall power jack (3.3, 5, 12 and 24 V outlets)
+is the first such board (Jeff, 2026-11-18).
 
 ![The drawn sheet](poe_pd.png)
-
-The design is TI's PMP20878 PD stage (TIDRRG3B sheet 2) with the deviations listed in section 5.
 
 ## 3. Interface
 
 | Port | On the sheet | Direction | Rating | Source |
 |---|---|---|---|---|
-| PR12, PR36, PR45, PR78 | hierarchical label | in | Magnetics centre taps, 0 to 57 V DC between pair sets | IEEE 802.3bt PSE range; SLUSCD1C 8.2.2.1 p33 |
-| POE_VDD | hierarchical label | out | Rectified PoE, 0 to 57 V; up to 71.3 W at the PD at Class 8 (a Type 4 PSE), less when the PSE grants less (section 4). Parts rated for 90 W continuous, 1.73 A (section 5a) | SLUSCD1C p1; Table 1 p18 |
-| PRI_RTN | power symbol (global) | out | The switched return after the hot-swap FET; 1.85 A max RTN current | SLUSCD1C p6 |
-| VCIN | hierarchical label | in | The converter's bias winding into VC_IN (D11 also feeds VC_OUT from it) | SLUSCD1C 8.2.2.8 p35 |
-| VCOUT | power symbol (global) | out | VC_OUT, the bias supply for the converter's controller (about 10-13 V); also drives the opto LEDs | SLUSCD1C p4, 8.2.2.8 p35 |
-| CONV_SS | hierarchical label | out | PG through 0R: holds the converter's soft-start low until the hot-swap FET is on | PMP20878 R66 |
-| POE_TPH_N, POE_TPL_N | hierarchical label | out | Open collector on the isolated side, 10k to +3V3. Each follows its TPS2373 pin: TPx low turns the opto LED on and pulls POE_TPx_N low. The code table is in section 4 | SLUSCD1C Tables 2-3 p19, 8.2.2.7 p34 |
-| +3V3, GND | power symbol (global) | in | The isolated (secondary) logic supply and ground for the opto outputs | |
+| PR12, PR36, PR45, PR78 | hierarchical label | in | Magnetics centre taps, 0 to 57 V DC between pair sets | IEEE 802.3bt PSE range; LT4321 p5 |
+| POE_VDD | hierarchical label | out | **Switched +**: the hot-swap FET's source (LT4294 HSSRC). 0-57 V; up to 71.3 W at the PD at Class 8, less when the PSE grants less (section 4). Parts rated for 90 W continuous, 1.73 A (section 5a) | LT4294 p5, p8, p16 |
+| POE_VSS | power symbol (global) | out | The return and the primary ground (LT4294 GND); **not switched** | LT4294 p5, p16 |
+| PD_PWRGD | hierarchical label | out | Open drain to POE_VSS (100 V, 5 mA abs max): low during classification and inrush, open once the hot-swap FET is fully on. Use it to hold the load off (RUN, SS/SD) | LT4294 p2, p9 |
+| POE_T2P_N | hierarchical label | out | Open collector on the isolated side, 10k to +3V3; low when T2P is low. PWM-coded grant, section 4 | LT4294 p3, p9 Table 3 |
+| +3V3, GND | power symbol (global) | in | The isolated (secondary) logic supply and ground for the opto output | |
 
-The primary side (POE_VDD, POE_VSS, PRI_RTN, VCOUT) is isolated from the secondary (+3V3, GND,
-POE_TPx_N) only through the optocouplers (FOD817, 5000 Vrms UL1577). The 1500 Vrms barrier itself
-is the board's job: creepage and clearance at layout.
+The primary side (POE_VDD, POE_VSS) is isolated from the secondary (+3V3, GND, POE_T2P_N) only through the
+optocoupler (FOD817, 5000 Vrms UL1577). The 1500 Vrms barrier itself is the board's job: creepage and
+clearance at layout.
+
+**Load inrush.** IINRUSH = IGPU x CPORT / CGATE (LT4294 p8). With C105 alone that's 28-153 mA (worst-case
+bounds, section 5a). Everything on POE_VDD adds to CPORT, so a board recomputes it with its own input caps:
+it must stay under 350 mA for the first 80 ms (p9), and inside Q58's SOA.
 
 On a board, the power symbols join the board's own nets of the same name, so a board that calls its
 3.3 V rail something else renames them.
 
 ## 4. Power negotiation (firmware rules)
 
-The block asks for Class 8, but the switch decides what it gets. Whatever reads POE_TPH_N and
-POE_TPL_N (an ESP32 on wallnode-amp) has to follow these rules, because nothing in the hardware
-stops the converter drawing more than the grant.
+The block asks for Class 8, but the switch decides what it gets. Whatever reads POE_T2P_N (an ESP32 on
+wallnode-amp) has to follow these rules: nothing in the hardware stops the load drawing more than the grant.
 
-### What the switch granted: TPH/TPL
+### What the switch granted: T2P
 
-For a Class 8 PD, from SLUSCD1C Table 2 (granted) and Table 3 (demoted), p19. L means the pin is
-low; POE_TPx_N reads the same as its TPx pin.
+LT4294 Table 3 (p9), for a Class 5-8 PD (RCLS++ fitted), and Table 4 (p10):
 
-| TPH | TPL | Granted at the PD | When |
+| T2P (low-impedance share of the period) | POE_T2P_N | Granted at the PD | When |
 |---|---|---|---|
-| L | L | 71.3 W (Table 2 rounds it to 71 W) | Type 4 PSE, 5 class events: Class 8 granted |
-| L | H | 51 W | Demoted to 4 events: a Type 3 PSE, or a Type 4 short of budget |
-| H | L | 25.5 W | 2-3 events: an 802.3at (Type 2) PSE, or demoted to 25.5 W |
-| H | H | 12.95 W | 1 event: a Type 1 PSE, or demoted to 12.95 W. Also what the pins read before they're enabled and when they're off (below) |
+| 25% | low 25%, at 690-990 Hz | 71.3 W | Type 4 PSE, 5 class events: Class 8 granted |
+| 50% | low 50%, at 690-990 Hz | 51 W | 4 events: a Type 3 PSE, or a Type 4 short of budget |
+| always low | always low | 25.5 W | 2-3 events: an 802.3at (Type 2) PSE, or demoted |
+| always high (Hi-Z) | always high | 13 W | 1 event: a Type 1 PSE, or demoted. Also what the pin reads before power-good |
 
-BT isn't carried across the barrier. It only tells a Type 3-4 PSE from a Type 1-2 one, and the
-power is the same either way.
+T2P is driven after PWRGD is valid (p3). The opto stretches the low time: with the 10k pull-up, its
+turn-off (storage + fall) is about 80 us (FOD817 p6 Fig. 15), so a 25% duty reads up to ~33% and 50% up to
+~58% (calc/poe_pd_90w.py). The firmware decodes **over at least 4 periods**, and uses these bands:
 
-The outputs come on 20-28 ms after VC_IN goes high (p8; typically 24 ms, p19). They go back to
-high impedance (H/H here) on thermal shutdown, when VC_OUT falls below its UVLO, or when VDD-VSS
-drops below about 32 V, and come back with the same code afterwards (p19). So H/H can mean "not
-known yet", and the firmware treats it as the lowest grant.
+| Measured low share | Grant |
+|---|---|
+| under 12% | 13 W (and "not known yet") |
+| 12-42% | 71.3 W |
+| 42-80% | 51 W |
+| over 80% | 25.5 W |
+
+It also checks that the period is 0.9-1.6 ms when it's toggling (690-990 Hz, plus margin). Anything else,
+or two decodes that disagree, counts as the lowest grant.
 
 Firmware rule:
 1. Boot with the amp muted, or with its limiter at the idle tier.
-2. Read POE_TPH_N and POE_TPL_N, twice a few milliseconds apart, and use the code only when both
-   reads agree.
+2. Decode POE_T2P_N twice, a few periods apart, and use the grant only when both decodes agree.
 3. Set the amp limiter so the whole board stays under the granted power (minus the board's own
    draw, converter losses included), then unmute (after the stagger below).
-4. Keep watching the pins. If the code drops, cut the limiter at once; if it rises, ramp up.
+4. Keep decoding. If the grant drops, cut the limiter at once; if it rises, ramp up.
 
 ### Asking for less, then more: LLDP
 
@@ -114,13 +124,13 @@ paywalled and wasn't read):
 Firmware rule:
 1. Lower the amp limiter first, then send the lower request.
 2. To go up, send the request and raise the limiter only after the switch's PSE allocated power
-   value comes back at the new figure. Never above the TPH/TPL grant.
-3. TPH/TPL don't change with LLDP: they show the hardware grant only. The firmware keeps the LLDP
+   value comes back at the new figure. Never above the T2P grant.
+3. T2P doesn't change with LLDP: it shows the hardware grant only. The firmware keeps the LLDP
    allocation itself and limits to the smaller of the two.
 4. If LLDP never answers, the hardware grant is all there is.
 
 This needs a managed switch that supports 802.3bt LLDP power (Power via MDI). An unmanaged switch
-gets the hardware class only: TPH/TPL is the whole story, and the switch usually reserves the full class
+gets the hardware class only: T2P is the whole story, and the switch usually reserves the full class
 for the port. ESP-IDF has no LLDP power agent that we know of, so the firmware sends and parses the
 LLDPDUs itself (EtherType 0x88CC).
 
@@ -142,60 +152,73 @@ delay. The node's own stagger comes on top of that; it doesn't replace it.
 
 | Source | What was used | Terms |
 |---|---|---|
-| TI SLUSCD1C, TPS2373 datasheet, Rev C (Nov 2018) | Pinout, detection/class/REF resistors, TVS, VC caps, TPx opto drive | TI Important Notice (last updated 10/2025, printed on the datasheet's last page): "TI grants you permission to use these resources only for development of an application that uses the TI products described in the resource. Other reproduction and display of these resources is prohibited." This block uses the TPS2373-4 and reproduces none of TI's documents. Read 2026-11-11. |
-| TI PMP20878 (TIDRRG3B schematic, TIDUDB0 test report), TPS2373-4 Class 8 reference | Topology and values of the PD stage (input filter, bulk, bias, PG to SS) | Same notice. Values and topology were reused in an original drawing; TI's design files aren't redistributed here. |
-| TI TIDA-050023 (TIDUEL2) | Opto feedback practice (FOD817) | Same notice; nothing copied. |
+| ADI LT4294 data sheet, Rev B (04/19) | Pinout, Class 8 resistors, hot-swap FET and CGATE, CPD split, TVS, PWRGD, T2P coding, typical application (p16) | ADI's data sheets are published for designing in its parts; values and topology reused in an original drawing, nothing reproduced. |
+| ADI LT4321 data sheet, Rev A (07/22) | Pinout, MOSFET requirements, CPD, TVS, the Zener enable with a choke (Fig. 5 p10) | Same. |
+| ADI DC2583A demo manual, Rev A (11/18) | The whole PD stage: schematic (p8-9) and parts list (p6-7), including R12 8.2R, C1/C3/C5, Q1/Q3-Q10 | Same; ADI's design files aren't redistributed here. |
+| Nexperia PSMN040-100MSE and PSMN075-100MSE data sheets (26 Mar 2013) | Ratings, Rds(on) vs Tj, SOA, pinning | Nexperia data sheets; nothing copied. |
+| Nexperia AN90003 Rev 5.0 (12 Feb 2026), LFPAK MOSFET thermal design guide | Rth(j-a) vs copper area for the FET pours (Fig. 25) | Nexperia application note; read, nothing copied. |
+| TI PMP20878 (TIDRRG3B) | The common-mode choke and its two 1 nF caps, kept from rev A | TI Important Notice: use for development with TI products only, no reproduction. No TI part remains in this block; nothing from TI's documents is reproduced. |
 | IEEE 802.3bt task force public documents (LLDP ad hoc baseline Rev001; yseboodt_05_0916) | The LLDP power rules in section 4 | Read and summarised in our own words, with short quotes; nothing copied. Read 2026-11-12. |
-| KiCad 10 stock symbols and footprints (Device, Isolator, Connector, power; Diode_SMD, Capacitor_SMD, Resistor_SMD, Inductor_SMD, Package_DIP, TestPoint) | Symbols and footprints | CC-BY-SA-4.0 with KiCad's exception: designs that use the libraries aren't bound by the licence. |
-| `pcb-blocks:TPS2373-4` symbol, `pcb-blocks:TI_RGW0020B_VQFN-20-1EP_5x5mm_P0.65mm_EP2.2x2.2mm_ThermalVias` footprint | Drawn for wallnode-amp from SLUSCD1C p4 and TI drawing 4222816/A | Original work, CERN-OHL-P-2.0 with the rest of this repo. Its 3D model is KiCad's stock Texas_RGW0020A STEP. |
+| KiCad 10 stock symbols and footprints (Device, Isolator, Connector, power; Diode_SMD, Capacitor_SMD, Resistor_SMD, Inductor_SMD, Package_DIP, Package_DFN_QFN, Package_TO_SOT_SMD, TestPoint) | Symbols and footprints | CC-BY-SA-4.0 with KiCad's exception: designs that use the libraries aren't bound by the licence. |
+| `pcb-blocks:LT4294`, `pcb-blocks:LT4321`, `pcb-blocks:PSMN040-100MSE`, `pcb-blocks:PSMN075-100MSE` symbols | LT4294 drawn from its p2/p5 pin table. LT4321 is KiCad's `Power_Management:LT4321xUF` with EN/~EN typed input (KiCad's has ~EN as an output) and the stacked OUTN pin split into 9 and 17 (EP), so a SKiDL netlist can match it. The PSMN parts are KiCad's `BUK9M53-60EX` LFPAK33 symbol renamed (pins 1-3 S, 4 G, 5 D, as Nexperia's pinning table) | CERN-OHL-P-2.0 with the rest of this repo (the derived symbols keep KiCad's licence exception). |
 
-Deviations from PMP20878, from the wallnode-amp design notes:
-- The auxiliary adapter input (APD divider, ADPT circuit) is left out. APD is tied to RTN, as the pin
-  table says for an unused APD.
-- AMPS_CTL and MPS_DUTY are open (automatic MPS off): the converter's idle draw is far above the MPS
-  minimum. UVLO_SEL and /BT are open as well.
-- TPH/TPL drive two optocouplers instead of LEDs (SLUSCD1C 8.2.2.7). LED current is 1.55-2.11 mA at
-  VC 10-13 V (under the 3 mA recommendation), and the 10k pull-up needs CTR >= 19% at 1.5 mA; FOD817A
-  is 80-160%.
-- D11 is an MMDL914 in place of PMP's BAS316, whose datasheet couldn't be obtained.
+Deviations from DC2583A:
+- **Common-mode choke kept** (L10 with C100/C101, from PMP20878), for conducted emissions from the load's
+  converter. With it, the LT4321 is enabled by a 24 V Zener from VPORT+ to EN (LT4321 Fig. 5), not by
+  PWRGD (DC2583A R18), and each IC gets its own TVS (D12, D10) and 47 nF CPD.
+- **H-grade ICs** (LT4294HDD, LT4321HUF; 125 C) in place of DC2583A's I-grade (85 C).
+- **All port MLCCs are 250 V** (DC2583A: 100 V) for the 2x rule at 57 V; CGATE sees up to 75 V.
+- AUX is tied to GND (unused, LT4294 p5); DC2583A's auxiliary input, its LED and its lab-test FET (Q11) are left out.
+- The class resistors are fixed for Class 8 (DC2583A has a jumper bank).
+- T2P drives an optocoupler (LT4294 p16 shows "OPTO"), LED from POE_VDD through 33k.
 
-- C100-C102 are 250 V where PMP20878 uses 100 V, and the class resistors R101/R102 are 0805 (section 5a).
+## 5a. Ratings at 90 W
 
-Known open points, carried from the GATE 3 review (not errata, since nothing has been measured):
-- The SMDIP-4_W9.53mm footprint still has to be checked against onsemi case 709AH, and the opto
-  creepage at layout.
+The block is rated for the worst case, not the 71.3 W IEEE PD figure: **90 W continuous at the PD**, the full
+Class 8 PSE budget arriving on a short cable. The lowest Type 4 PSE port voltage is 52 V (IEEE 802.3bt; the
+standard wasn't read), so the current is 90 / 52 = **1.73 A** (1.80 A at 50 V). In the bridge, **one pair
+set carries all of it**. Derating is at 57 V and the air at the board is 50 C. Every FET's loss uses its
+**175 C maximum Rds(on)**. The workspace section 5 rules apply. The numbers and their pages are in
+[`calc/poe_pd_90w.py`](calc/poe_pd_90w.py) (output committed); the summary:
 
-## 5a. Ratings at 90 W (pcb-blocks#5, #3)
-
-The block is rated for the worst case, not the 71.3 W IEEE PD figure: **90 W continuous at the PD**,
-the full Class 8 PSE budget arriving on a short cable. The lowest Type 4 PSE port voltage is 52 V
-(IEEE 802.3bt; the standard wasn't read, see section 4), so the current is 90 / 52 = **1.73 A**
-(1.80 A at 50 V). Derating at 57 V. Air at the board 50 C. Workspace section 5 rules: MLCC >= 2x
-working voltage, resistors <= 50% power, aluminium caps >= 1.25-1.5x, inductor current >= peak +
-20-30%, diodes and FETs >= 1.5x voltage with Tj checked. The calculation is wallnode-amp's
-`calc/poe_pd_90w.py` (JeffBasso/pcb-project-Ion-Speakers), which cites each datasheet page.
-
-| Part | Check at 90 W, 50 C | Result |
+| Part | Check | Result |
 |---|---|---|
-| U10 TPS2373-4 | RTN 1.73 A vs 1.85 A recommended max (SLUSCD1C p6); limit min 1.9 A (p7). Tj = 50 + (1.73^2 x 0.2 ohm max + bias) x 38 C/W = 74 C | pass, 94% (97% at 50 V): the IC is the limit of this block |
-| U10 hot-swap FET | VDD/RTN abs max 100 V vs 57 V (p5) | 1.75x, pass |
-| D50-D57 PDS5100 | 100 V vs 57 V (1.75x). 4-pair balanced, 0.87 A each: Tj 89 C (Fig. 1) to 112 C (Vf 0.79 V bound), 90 C/W min pad (DS30483 p2-3). One pair set carrying all 1.73 A: 129 C typical, 173 C on the bound | pass balanced; the one-pair-set bound needs cathode copper, #6 |
-| L10 744272251 | 2.8 A rated (dT 40 K) vs 1.73 A = 1.62x; 65 C; rated voltage 80 V | pass |
-| D10 SMBJ58A | VRWM 58 V vs 57 V working; clamps at 93.6 V max | pass (a TVS stand-off isn't derated) |
-| D11 MMDL914 | 100 V vs VC_IN 25 V abs max; 200 mA vs <= 20 mA | pass |
-| C100, C101 | **1 nF 250 V X7R 0603** (Yageo CC0603KRX7RYBB102): 4.4x of 57 V. Were 100 V (1.75x, fail) | fixed |
-| C102 | **0.1 uF 250 V X7R 1206** (Yageo CC1206KKX7RYBB104): 4.4x. Were 100 V 0805. It's the detection cap (0.05-0.12 uF, SLUSCD1C 8.2.2.3 p33), seen at <= 10.1 V where a 250 V part loses little to DC bias | fixed |
-| C103, C104 | 50 V vs VC_IN 25 V / VC_OUT 20 V abs max | 2.0x / 2.5x, pass |
-| C105 VKME1452A101MV | 100 V vs 57 V = 1.75x; ripple at 100 kHz behind the board's input filter ~0.11 A vs 1.04 A | pass (the ripple figure is the board's, wallnode-amp's L40 and C408-C411) |
-| R101 RCLSA, R102 RCLSB | Held at a class event continuously (a PSE stuck in classification), ICLS max (p7) through the resistor: 113 mW / 79 mW. **Vishay CRCW0805, 0.25 W at 70 C** (D/CRCW e3 p1): 45% / 32%. As 0603 (0.125 W) they were 90% / 63% | fixed |
-| R100 | DEN is open-drain above VCL_ON (13 V max, p7, p24): 6.9 mW at most | 5%, pass |
-| R105, R106 | (15 V VC_OUT - 1 V LED)^2 / 5.36k = 37 mW continuous at Class 8 (TPx low) | 30% of CRCW0603, pass |
-| R103, R104, R107, R108 | REF, PG, 3.3 V pull-ups: < 2 mW | pass |
+| Q50-Q57 PSMN075-100MSE | 1.73 A x 192 mohm (175 C max, p5) = 0.575 W (0.622 W at 50 V), two conduct; 100 V vs 57 V | 1.75x; Tj with the block's copper below |
+| Q58 PSMN040-100MSE | 36.6 mohm x 2.7 (Fig. 12) = 98.8 mohm: 0.30 W; 1.73 A vs 21 A at Tmb 100 C | 8% |
+| Inrush (Q58, C104, R103) | IGPU 18-27 uA x C105 80-120 uF / CGATE 42-52 nF, with CGATE halved again as a DC-bias bound: 28-153 mA | < 350 mA; inside Q58's DC SOA (~0.46 A at 57 V, Tmb 50 C) |
+| CPD (C100-C103) | 2 x 47 nF + 2 x 1 nF at +-10%: 0.086-0.106 uF | inside 0.05-0.12 uF |
+| MLCCs | 250 V vs 57 V (CGATE: vs 75 V) | 4.4x / 3.3x |
+| C105 VKME 100 uF 100 V | 1.75x | pass |
+| R101 RCLS, R102 RCLS++ | 1.43 V held continuously (a PSE stuck in classification): 41 mW / 17.5 mW, CRCW0805 at its lower 0.125 W rating | 33% / 14% |
+| R100 8.2R | 44 mA held: 17 mW | 13% |
+| R105 33k 1206 | LED 1.04-1.71 mA over 37-57 V (T2P 5 mA abs max); 96 mW of 0.25 W | 38% |
+| U11 FOD817AS | needs 0.29 mA into 10k; CTR 80% min x 0.70 at 1 mA x 0.95 at 50 C gives 0.56 mA | 1.9x |
+| D13 MMSZ5252B | EN on above 27.8 V max, off below 22.8 V (class range ends at 21 V); 5 mW | pass |
+| D10, D12 SMBJ58A | VRWM 58 V; clamp 93.6 V vs 100 V abs max of the ICs and FETs | pass |
+| L10 744272251 | 2.8 A vs 1.73 A: 1.62x, 65 C | pass |
+| U12 LT4321, U10 LT4294 | 46 mW / 114 mW in operation; the LT4294 is thermally protected during classification (up to 1.5 W, p10) | pass |
 
-Resistor MPNs are Vishay CRCW (D/CRCW e3 rev 14-Apr-2026); any 1%, 100 ppm thick-film part of the
-same size and at least the same P70 can stand in, but **R101/R102 need 0.25 W in 0805**: most 0805
-parts are 0.125 W, which fails the 50% rule. MLCC MPNs were picked from the JLCPCB/LCSC catalog
-(2026-11-16); their voltage and dielectric are the requirement, the make isn't.
+**Copper per FET** (layout, section 9; Nexperia AN90003 Fig. 25, LFPAK33 on one 2 oz layer, 0.5 W curve):
+
+| FET | Pour (F.Cu + B.Cu, 1 oz each) | Rth(j-a) | Tj at 0.62 W (Q58: 0.32 W), 50 C air |
+|---|---|---|---|
+| Q50-Q53 (BR_P strip, shared; one conducts) | 2099 mm2 | ~51 K/W | ~81 C |
+| Q55, row 36 (worst row) | 413 mm2 | ~95 K/W | ~109 C |
+| Q54, row 12 | 674 mm2 | ~77 K/W | ~98 C |
+| Q56, row 45 | 760 mm2 | ~73 K/W | ~95 C |
+| Q57, row 78 | 1035 mm2 | ~63 K/W | ~89 C |
+| Q58 (VPORT band) | 705 mm2 | ~76 K/W | ~74 C |
+
+All are under the FR4 120 C limit AN90003 marks and the 125 C design limit, with copper alone: no heat sink
+and no thermal pad. Fig. 25 is one 2 oz layer; the block has two stitched 1 oz layers of the same outline,
+and taking their summed area as that layer is a judgement. A host board's inner planes only add to it.
+Re-check with the kit's board thermal check (pcb-design-kit#428) once it exists, and with an IR picture
+at the highest grant (BRINGUP.md).
+
+Resistor MPNs are Vishay CRCW; any 1%, 100 ppm thick-film part of the same size and at least the same P70 can
+stand in. MLCC MPNs are Yageo, from the JLCPCB/LCSC catalog: the voltage and dielectric are the requirement,
+the make isn't. **Do not substitute:** I-grade LT4294/LT4321 (85 C), and FETs with less than 100 V or
+VGS(th) min under 2 V (LT4321 p8).
 
 ## 6. Proven on
 
@@ -211,34 +234,33 @@ measured, this section gets the board and rev, a link to the bring-up data in
    `lib/pcb-blocks.pretty` to the symbol and footprint tables.
 2. Copy `src/blocks/poe_pd.py` into the board's `src/blocks/`. Its first line is
    `# from pcb-blocks <tag or main> (<commit>)`. Add a SOURCES.md line with the repo URL and commit.
-3. Call `poe_pd(...)` from the board's `board()` with the board's nets. KiCad re-annotates the
-   placed sheet, so set `ref=` in the copy to match, or let the parity report list what to change.
+3. Call `poe_pd(...)` from the board's `board()` with the board's nets: the load's input on POE_VDD and
+   POE_VSS, and PD_PWRGD to whatever holds the load off (a converter's RUN or soft-start).
 4. Run `pcb-skidl.ps1 <board> -Sheet "PoE PD"` until it reports 0 differences.
-5. Bring the layout across (section 9): `pcb-blocks.kicad_blocks/poe_pd.kicad_block/poe_pd.kicad_pcb`,
-   applied as one group to the board's 31 footprints, matched by reference.
+5. Recompute the inrush with the board's own input capacitance on POE_VDD (section 3).
+6. Bring the layout across (section 9): `pcb-blocks.kicad_blocks/poe_pd.kicad_block/poe_pd.kicad_pcb`,
+   applied as one group to the board's 30 footprints, matched by reference.
 
-The converter, the magnetics and the board's own isolation barrier (the moat, inner planes and pours) are
-the board's.
+The load (converter), the magnetics, any per-output current limiting, and the board's own isolation barrier
+(the moat, inner planes and pours) are the board's.
 
 ## 8. Parity
 
-`tools\check-blocks.ps1` on the `poe-pd` branch, 2026-11-12, after the Class 8 change (skidl 3.0.0, KiCad 10.0.6):
+`tools\check-blocks.ps1`, 2026-11-19 (skidl 3.0.0, KiCad 10.0.6):
 
 ```
 --- poe_pd
-  Python: 31 parts, 25 nets (+0 unconnected pins)   schematic: 31 parts, 25 nets (+5 unconnected pins)
+  Python: 30 parts, 29 nets (+0 unconnected pins)   schematic: 30 parts, 29 nets (+0 unconnected pins)
   differences: 0
-  nets with the same pins but a different name (not a difference): 12
+  nets with the same pins but a different name (not a difference): 19
   Parity: 0 differences.
-poe_pd: parity 0, design block identical
+poe_pd: parity 0, design block identical, layout identical
 All 1 block(s) pass.
 ```
 
-The 12 renamed nets are the local nets inside the sheet, which KiCad prefixes with `/PoE PD/`.
-The 5 unconnected pins are U10's four unused pins and pin 20 (NC), all with no-connect flags.
+The 19 renamed nets are the local nets inside the sheet, which KiCad prefixes with `/PoE PD/`.
 
-`kicad-cli sch erc` on the block project: 0 errors and 2 warnings, both for CONV_SS having only one
-pin inside the block (it goes to the converter on a board).
+`kicad-cli sch erc` on the block project: 0 errors, 0 warnings.
 
 ## 9. Layout
 
@@ -246,27 +268,27 @@ pin inside the block (it goes to the converter on a board).
 without its outline (`pcb-blocks.kicad_blocks/poe_pd.kicad_block/poe_pd.kicad_pcb`, written and checked by
 `tools/block_layout.py`; `tools/check-blocks.ps1` fails if they differ).
 
-![The layout, top](poe_pd_layout.png)
+![The layout](poe_pd_layout.png)
 
-**How it was made (pcb-blocks#2, 2026-11-15).** Everything is scripted with KiCad 10's pcbnew Python in
-`layout_poe_pd.py` (`prepare`, then `finish` to fill the pour); nothing is autorouted. Freerouting was tried
-for the small signals and dropped: it applies the POE_IN 0.6 mm clearance to the TPS2373's own 0.65 mm-pitch
-pins (it can't read the courtyard exception below), so it couldn't route the fan-out and oscillated on the
-bridge nets. The script places and locks all 31 parts and draws every track, via and zone, so the layout can
-be regenerated and reviewed line by line.
+**How it was made (Ion-Speakers#15, 2026-11-19).** Everything is scripted with KiCad 10's pcbnew Python in
+`layout_poe_pd.py` (`prepare` places, routes, pours and fills; `finish` refills). **Nothing is autorouted.**
+Freerouting can't apply the fine-pitch fan-out exception below, so every track, via and zone is written in the
+script, which checks the pad positions it was written against before it draws anything.
 
 | | |
 |---|---|
-| Size | 62 x 45 mm outline (the test project's), parts on the top side only |
+| Size | 130 x 74 mm outline (the test project's), parts on the top side only. Rev A's was 62 x 45 mm: the growth is the FET copper for the 90 W worst case |
 | Copper | F.Cu and B.Cu only, so the block sits on a 2-, 4- or 6-layer board; inner layers are the board's |
-| Flow | bridges (four input rows, PR in the middle of each) -> L10 -> VDD / VSS rails with D10, C102, C101 across them -> U10 -> C105 under U10; the optos straddle the barrier at the top, the secondary strip above them |
-| Power path | 1.0 mm: BR_P / BR_N buses, the PR links, the VDD and VSS rails, RTN to C105 and VDD to C105 (B.Cu). The worst case is 1.73 A (90 W from 52 V, section 5a); IPC-2221 external, 10 C rise, 1 oz needs ~0.64 mm |
-| U10 | fan-out 0.25-0.3 mm, kept inside the courtyard where the pins are 0.65 mm apart; exposed pad (VSS) to a 168 mm2 POE_VSS pour on B.Cu through the footprint's thermal vias. SLUSCD1C p37 asks for nine thermal vias; the footprint has four (2 x 2, 0.3 mm drill), as on wallnode-amp: an open point for the first board's layout review |
-| Clearances | POE_IN nets (POE_VDD, POE_VSS, BR_P/N, PR12-PR78, VCIN) 0.6 mm (IPC-2221 Table 6-1 B2, 31-150 V), 0.2 mm inside U10's courtyard (B4, under the body); other nets 0.15 mm. In `poe_pd.kicad_dru` and the project's netclasses, the same as wallnode-amp |
-| Isolation barrier | a 6 mm keep-out band (no tracks, vias or pours, F.Cu and B.Cu) under U11 / U12, and a DRC rule: secondary nets (+3V3, GND, POE_TPH_N, POE_TPL_N) keep 6 mm clearance and creepage from everything else. 6 mm is wallnode-amp's moat placeholder until IEC 62368-1 is in the library. Measured: 7.04 mm from the closest secondary copper (the GND link) to primary copper; the FOD817 pads are 7.52 mm apart |
-| Ports | the pads themselves: PR12-PR78 on the bridge diodes' PR pads (left), POE_VDD and PRI_RTN on C105's pads (bottom), VCIN / VCOUT on C103 / C104 / D11, CONV_SS on R104 pad 2, POE_TPH_N / POE_TPL_N / +3V3 / GND on R107 / R108 and the opto emitters (top) |
+| Bridge | four pair rows (12, 36, gap, 45, 78), each a PR pour of 43.8 x 12 mm on both layers. A BR_P strip runs down the left, with a band along the top to L10; a BR_N strip runs down the right. Each row's top FET is on the left edge (tab in the BR_P strip, sources in the row) and its bottom FET on the right edge (tab in the row, sources in the BR_N strip) |
+| LT4321 | in the gap between the pair sets. Gate drives and pair senses fan out on F.Cu to vias and run on B.Cu (TG down the left, BG down the right), so the F.Cu pours stay whole; OUTP reaches the BR_P band on an F.Cu riser at x 40 |
+| Power path | pours on both layers, via-stitched (~220 vias: 0.8/0.4 mm on POE nets, 0.6/0.3 mm on signals); short 0.5-1.0 mm stubs where a pad meets a pour. The worst case is 1.73 A; IPC-2221 external, 10 C rise, 1 oz needs ~0.64 mm |
+| FET copper | section 5a: every conducting FET at or under ~109 C at 50 C air |
+| PD section | L10 -> VPORT band (top) with D10, C101, D13 and Q58's tab -> POE_VDD pour (Q58's sources, C105+, R105) -> VSS pour (U10, the class resistors, C102, C104, C105-) |
+| U10 | the plain DFN-10 footprint (no vias in the exposed pad, CLAUDE.md section 7); its pad joins the VSS pour on F.Cu |
+| Clearances | POE_IN nets (POE_VDD, POE_VSS, BR_P/N, PR12-PR78, PD_VPORT, PD_VPIN) 0.6 mm (IPC-2221 Table 6-1 B2, 31-150 V). 0.25 mm inside the LT4321 and LT4294 fan-out areas (rule areas `FANOUT_U12`, `FANOUT_U10`) and the FET courtyards: functional insulation inside the primary circuit, at no less than the parts' own pad gaps. Other nets 0.15 mm. In `poe_pd.kicad_dru` and the project's netclasses |
+| Isolation barrier | a 6 mm keep-out band (no tracks, vias or pours, F.Cu and B.Cu) under U11, and a DRC rule: secondary nets (+3V3, GND, POE_T2P_N) keep 6 mm clearance and creepage from everything else. 6 mm is wallnode-amp's moat placeholder until IEC 62368-1 is in the library; the FOD817 pads are 7.52 mm apart |
+| Ports | the pads themselves: PR12-PR78 on the FETs' PR copper, POE_VDD and POE_VSS on C105's pads, PD_PWRGD on TP41, POE_T2P_N / +3V3 / GND on R106 and U11's output pins (right edge) |
 | Checks | DRC (`kicad-cli pcb drc --refill-zones --schematic-parity`): 0 errors, 0 warnings, 0 unconnected, parity 0 |
-| Silkscreen | designators 1.0 mm (0.8 mm where 1.0 mm has no clear spot), off pads; D55's has no clear spot between the bridge rows and is on F.Fab only |
 
 A board that places the block keeps its own barrier: the band has to line up with the board's moat, and no
 inner-layer plane may run under the band or join the two sides.

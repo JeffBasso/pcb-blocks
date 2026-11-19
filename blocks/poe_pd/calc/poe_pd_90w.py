@@ -64,6 +64,37 @@ def r_power(v, r):
     return v * v / r
 
 
+# Nexperia AN90003 Rev 5.0 (12 Feb 2026) Fig. 25 p20: LFPAK33 on a single top layer of 2 oz copper, x by x mm,
+# FR4 1.6 mm, still air at 20 C, 0.5 W curve - read by eye from the plot (+-5 C). Rth(j-a) = (Tj - 20) / 0.5.
+AN90003_FIG25 = [(10.0, 100.0), (15.0, 78.0), (20.0, 68.0), (25.0, 60.0), (30.0, 53.0), (40.0, 47.0), (50.0, 44.0)]
+
+
+def rth_from_area(area_mm2):
+    """Rth(j-a) for a pour of this area, as the AN90003 Fig. 25 square of the same area (interpolated in x)."""
+    x = area_mm2 ** 0.5
+    pts = AN90003_FIG25
+    if x <= pts[0][0]:
+        return (pts[0][1] - 20.0) / 0.5
+    for (x0, t0), (x1, t1) in zip(pts, pts[1:]):
+        if x <= x1:
+            t = t0 + (t1 - t0) * (x - x0) / (x1 - x0)
+            return (t - 20.0) / 0.5
+    return (pts[-1][1] - 20.0) / 0.5
+
+
+# Copper each conducting FET sits on, from the filled layout (layout_poe_pd.py; zone fills read back with pcbnew):
+# the pour island its tab is on, F.Cu + B.Cu, 1 oz each, taken as one 2 oz layer of the summed area (the block
+# is 2-layer; a host board's inner planes only add to it). Worst row per FET type.
+COPPER = [
+    ('Q50-Q53 top FETs (tab on the BR_P strip, shared; one conducts)', 1056 + 1043),
+    ('Q55 bottom FET, row 36 (worst row: F.Cu split by the BR_P riser, B.Cu by the PR12 sense)', 176 + 237),
+    ('Q54 bottom FET, row 12', 176 + 498),
+    ('Q56 bottom FET, row 45', 523 + 237),
+    ('Q57 bottom FET, row 78', 523 + 512),
+    ('Q58 hot-swap FET (tab on the VPORT band)', 357 + 348),
+]
+
+
 def main():
     rows = []
 
@@ -161,6 +192,17 @@ def main():
     total = 2 * p75 + p40
     print(f"\nFront-end FET loss, worst case: 2 x {p75:.3f} + {p40:.3f} = {total:.2f} W "
           f"({total/P_PI:.1%} of 90 W); L10 DCR adds ~0.2 W.")
+
+    print('\nBoard copper per FET (AN90003 Rev 5.0 Fig. 25, 0.5 W curve; loss at 175 C Rds(on), 50 V row; 50 C air;'
+          ' limits: Tj 125 C design, PCB 120 C):')
+    for name, area in COPPER:
+        p = fet_loss(i50, rds40 if name.startswith('Q58') else rds75)
+        rth = rth_from_area(area)
+        tj = T_AIR + p * rth
+        verdict = 'PASS' if tj <= 120.0 else 'FAIL'
+        print(f"  {name}: {area} mm2 (~{area**0.5:.0f} mm square), Rth ~{rth:.0f} K/W, {p:.3f} W -> Tj ~{tj:.0f} C  {verdict}")
+    print('  Fig. 25 is 2 oz on one layer; the block has 1 oz on two stitched layers of the same outline, so the summed area'
+          ' is a judgement (re-check with kit #428 and an IR picture at the highest grant, BRINGUP.md).')
 
 
 if __name__ == '__main__':
