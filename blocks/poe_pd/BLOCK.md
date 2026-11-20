@@ -12,15 +12,16 @@ current rating at 90 W, and its Schottky bridge at 173 C on the one-pair-set bou
 DC2583A is Ethernet Alliance-certified; this block is not, and it adds a common-mode choke DC2583A
 doesn't have (section 5).
 
-The block has a PCB layout (section 9): scripted, DRC-clean in the block's test project, with the FET copper
-sized for the 90 W worst case. It hasn't been built.
+The block has a 4-layer PCB layout, 54 x 40 mm (section 9). It is scripted and DRC-clean in the block's test
+project, and its FET copper is sized for the 90 W worst case, even with no help from the inner layers. It hasn't
+been built.
 
 ## 2. What it is
 
 The PD side of a PoE port, from the magnetics' centre taps to the load's input:
 
-- an **LT4321 ideal-diode bridge** (U12) with eight **PSMN075-100MSE** FETs (Q50-Q57), so 2-pair and
-  4-pair PSEs work without diode drops;
+- an **LT4321 ideal-diode bridge** (U12) with eight **PSMN040-100MSE** FETs (Q50-Q57), so 2-pair and
+  4-pair PSEs work without diode drops (DC2583A uses PSMN075-100MSE; section 5 says why these);
 - an input common-mode choke (Würth 744272251, L10, from TI's PMP20878) with 1 nF caps either side.
   Because the choke sits between the bridge and the controller, the LT4321 is enabled by a 24 V Zener
   from VPORT+ (D13, LT4321 Fig. 5). There's a TVS at each IC (D12 at the LT4321, D10 at the LT4294) and
@@ -156,7 +157,7 @@ delay. The node's own stagger comes on top of that; it doesn't replace it.
 | ADI LT4321 data sheet, Rev A (07/22) | Pinout, MOSFET requirements, CPD, TVS, the Zener enable with a choke (Fig. 5 p10) | Same. |
 | ADI DC2583A demo manual, Rev A (11/18) | The whole PD stage: schematic (p8-9) and parts list (p6-7), including R12 8.2R, C1/C3/C5, Q1/Q3-Q10 | Same; ADI's design files aren't redistributed here. |
 | Nexperia PSMN040-100MSE and PSMN075-100MSE data sheets (26 Mar 2013) | Ratings, Rds(on) vs Tj, SOA, pinning | Nexperia data sheets; nothing copied. |
-| Nexperia AN90003 Rev 5.0 (12 Feb 2026), LFPAK MOSFET thermal design guide | Rth(j-a) vs copper area for the FET pours (Fig. 25) | Nexperia application note; read, nothing copied. |
+| Nexperia AN90003 Rev 5.0 (12 Feb 2026), LFPAK MOSFET thermal design guide | Rth(j-a) vs copper area for the FET pours: one 2 oz layer (Fig. 25), four layers with vias (Fig. 35), two FETs side by side (Fig. 41) | Nexperia application note; read, nothing copied. |
 | TI PMP20878 (TIDRRG3B) | The common-mode choke and its two 1 nF caps, kept from rev A | TI Important Notice: use for development with TI products only, no reproduction. No TI part remains in this block; nothing from TI's documents is reproduced. |
 | IEEE 802.3bt task force public documents (LLDP ad hoc baseline Rev001; yseboodt_05_0916) | The LLDP power rules in section 4 | Read and summarised in our own words, with short quotes; nothing copied. Read 2026-11-12. |
 | KiCad 10 stock symbols and footprints (Device, Isolator, Connector, power; Diode_SMD, Capacitor_SMD, Resistor_SMD, Inductor_SMD, Package_DIP, Package_DFN_QFN, Package_TO_SOT_SMD, TestPoint) | Symbols and footprints | CC-BY-SA-4.0 with KiCad's exception: designs that use the libraries aren't bound by the licence. |
@@ -166,6 +167,13 @@ Deviations from DC2583A:
 - **Common-mode choke kept** (L10 with C100/C101, from PMP20878), for conducted emissions from the load's
   converter. With it, the LT4321 is enabled by a 24 V Zener from VPORT+ to EN (LT4321 Fig. 5), not by
   PWRGD (DC2583A R18), and each IC gets its own TVS (D12, D10) and 47 nF CPD.
+- **Bridge FETs PSMN040-100MSE** (DC2583A: PSMN075-100MSE; Jeff, Ion-Speakers#15, 2026-11-19). At the 1.80 A
+  case the PSMN040 drops 66 mV (36.6 mohm max at 25 C, p5), inside LT4321 p8's 20-70 mV; the PSMN075 drops 128 mV
+  (71 mohm). The loss halves (0.320 W vs 0.622 W per conducting FET at 175 C Rds(on)), so the copper, not the FET,
+  stopped setting the block's size. Same LFPAK33 footprint, VDS and VGS(th) as PSMN075, and the **same IDSS limits**
+  (1 uA at 25 C, 500 uA at 175 C, p5 of both), so detection is unchanged against ADI's design (section 5a). The cost:
+  30 nC gate charge (p6) against 16.4 nC, so the gates take up to 2.0 ms to enhance at the LT4321's 15 uA minimum
+  pull-up (p3), with the body diodes conducting meanwhile.
 - **H-grade ICs** (LT4294HDD, LT4321HUF; 125 C) in place of DC2583A's I-grade (85 C).
 - **All port MLCCs are 250 V** (DC2583A: 100 V) for the 2x rule at 57 V; CGATE sees up to 75 V.
 - AUX is tied to GND (unused, LT4294 p5); DC2583A's auxiliary input, its LED and its lab-test FET (Q11) are left out.
@@ -183,7 +191,9 @@ set carries all of it**. Derating is at 57 V and the air at the board is 50 C. E
 
 | Part | Check | Result |
 |---|---|---|
-| Q50-Q57 PSMN075-100MSE | 1.73 A x 192 mohm (175 C max, p5) = 0.575 W (0.622 W at 50 V), two conduct; 100 V vs 57 V | 1.75x; Tj with the block's copper below |
+| Q50-Q57 PSMN040-100MSE | 1.73 A x 98.8 mohm (36.6 x 2.7 at 175 C, p5, p8 Fig. 12) = 0.296 W (0.320 W at 50 V), two conduct; 100 V vs 57 V | 1.75x; Tj with the block's copper below |
+| Q50-Q57 drop (LT4321 p8) | 1.80 A x 36.6 mohm (25 C max) | 66 mV, inside 20-70 mV |
+| Detection vs FET leakage | 4 FETs reverse-biased; IDSS 1 uA at 25 C / 500 uA at 175 C (p5), exponential between, sqrt(V) below 100 V (general knowledge); slope at 2.7 V | VSIG 23.7-25.2k (LT4294 p3): -0.8 % at 50 C air; 21.6k worst, re-detecting at 110 C right after a 90 W port drop, inside the 19-26.5k a PSE accepts and the same as with ADI's PSMN075 |
 | Q58 PSMN040-100MSE | 36.6 mohm x 2.7 (Fig. 12) = 98.8 mohm: 0.30 W; 1.73 A vs 21 A at Tmb 100 C | 8% |
 | Inrush (Q58, C104, R103) | IGPU 18-27 uA x C105 80-120 uF / CGATE 42-52 nF, with CGATE halved again as a DC-bias bound: 28-153 mA | < 350 mA; inside Q58's DC SOA (~0.46 A at 57 V, Tmb 50 C) |
 | CPD (C100-C103) | 2 x 47 nF + 2 x 1 nF at +-10%: 0.086-0.106 uF | inside 0.05-0.12 uF |
@@ -198,27 +208,36 @@ set carries all of it**. Derating is at 57 V and the air at the board is 50 C. E
 | L10 744272251 | 2.8 A vs 1.73 A: 1.62x, 65 C | pass |
 | U12 LT4321, U10 LT4294 | 46 mW / 114 mW in operation; the LT4294 is thermally protected during classification (up to 1.5 W, p10) | pass |
 
-**Copper per FET** (layout, section 9; Nexperia AN90003 Fig. 25, LFPAK33 on one 2 oz layer, 0.5 W curve):
+**Copper per FET** (layout, section 9; [`calc/fet_copper.py`](calc/fet_copper.py)). The case is 0.320 W per
+conducting FET (50 V row, 175 C Rds(on)) at 50 C air, with the neighbouring FET's heat added (AN90003 Fig. 41) for
+the bridge FETs. Each layer's copper is the tab net's filled copper within a 14 mm square centred on the tab, read
+from the board (`layout_poe_pd.py copper`).
 
-| FET | Pour (F.Cu + B.Cu, 1 oz each) | Rth(j-a) | Tj at 0.62 W (Q58: 0.32 W), 50 C air |
+| FET | F.Cu / In1 / In2 / B.Cu (mm2) | 4 layers, 1 oz each (Fig. 25-35) | Inner layers give nothing (F.Cu + B.Cu as one 2 oz layer, Fig. 25) |
 |---|---|---|---|
-| Q50-Q53 (BR_P strip, shared; one conducts) | 2099 mm2 | ~51 K/W | ~81 C |
-| Q55, row 36 (worst row) | 413 mm2 | ~95 K/W | ~109 C |
-| Q54, row 12 | 674 mm2 | ~77 K/W | ~98 C |
-| Q56, row 45 | 760 mm2 | ~73 K/W | ~95 C |
-| Q57, row 78 | 1035 mm2 | ~63 K/W | ~89 C |
-| Q58 (VPORT band) | 705 mm2 | ~76 K/W | ~74 C |
+| Q50, Q52 top (BR_P column; worst of the four; one conducts) | 88 / 83 / 94 / 88 | 9.1 mm square: 107 C | 9.4 mm: 111 C |
+| Q54 bottom, PR12 cell | 87 / 73 / 84 / 84 | 8.5 mm: 110 C | 9.2 mm: 113 C |
+| Q55 bottom, PR36 cell | 89 / 86 / 86 / 86 | 9.3 mm: 106 C | 9.3 mm: 112 C |
+| Q56 bottom, PR45 cell | 86 / 75 / 84 / 86 | 8.7 mm: 109 C | 9.3 mm: 112 C |
+| Q57 bottom, PR78 cell | 88 / 84 / 82 / 88 | 9.1 mm: 107 C | 9.4 mm: 111 C |
+| Q58 hot-swap (VPORT square) | 92 / 80 / 80 / 80 | 8.9 mm: 101 C | 8.9 mm: 106 C |
 
-All are under the FR4 120 C limit AN90003 marks and the 125 C design limit, with copper alone: no heat sink
-and no thermal pad. Fig. 25 is one 2 oz layer; the block has two stitched 1 oz layers of the same outline,
-and taking their summed area as that layer is a judgement. A host board's inner planes only add to it.
-Re-check with the kit's board thermal check (pcb-design-kit#428) once it exists, and with an IR picture
-at the highest grant (BRINGUP.md).
+Every FET is at or under 110 C on the 4-layer copper, and under the 120 C FR4 limit AN90003 marks even if the inner
+layers gave nothing (Jeff's bound, 2026-11-19). That's with copper alone: no heat sink and no thermal pad.
+
+Each layer is counted once. The square read on the curves is the smallest layer's area, never a sum. Rev B's
+first, 2-layer table summed F.Cu and B.Cu and read that sum on the 2 oz curve, which counted the copper twice; read
+correctly, that layout's worst FET was 122 C (Ion-Speakers wallnode-amp design-notes, 2026-11-19). Between Fig. 25
+(70 um summed) and Fig. 35 (280 um) the model interpolates in ln(thickness); that is a judgement. In1's band joining
+the BR_N strips takes the top of the row-12 and row-45 cells on In1, which is why Q54's and Q56's In1 reads lowest.
+A host board's copper only adds to this. Re-check with the kit's board thermal check (pcb-design-kit#428) once it
+exists, and with an IR picture at the highest grant (BRINGUP.md).
 
 Resistor MPNs are Vishay CRCW; any 1%, 100 ppm thick-film part of the same size and at least the same P70 can
 stand in. MLCC MPNs are Yageo, from the JLCPCB/LCSC catalog: the voltage and dielectric are the requirement,
 the make isn't. **Do not substitute:** I-grade LT4294/LT4321 (85 C), and FETs with less than 100 V or
-VGS(th) min under 2 V (LT4321 p8).
+VGS(th) min under 2 V (LT4321 p8). A bridge FET with a higher Rds(on) than PSMN040's needs the copper table redone,
+and one with higher IDSS needs the detection check redone.
 
 ## 6. Proven on
 
@@ -239,7 +258,8 @@ measured, this section gets the board and rev, a link to the bring-up data in
 4. Run `pcb-skidl.ps1 <board> -Sheet "PoE PD"` until it reports 0 differences.
 5. Recompute the inrush with the board's own input capacitance on POE_VDD (section 3).
 6. Bring the layout across (section 9): `pcb-blocks.kicad_blocks/poe_pd.kicad_block/poe_pd.kicad_pcb`,
-   applied as one group to the board's 30 footprints, matched by reference.
+   applied as one group to the board's 30 footprints, matched by reference. It is 4 layers: inside the block's
+   outline the board's inner layers are the block's (its FET copper and its BR_N / BR_P / POE_VSS planes).
 
 The load (converter), the magnetics, any per-output current limiting, and the board's own isolation barrier
 (the moat, inner planes and pours) are the board's.
@@ -270,25 +290,26 @@ without its outline (`pcb-blocks.kicad_blocks/poe_pd.kicad_block/poe_pd.kicad_pc
 
 ![The layout](poe_pd_layout.png)
 
-**How it was made (Ion-Speakers#15, 2026-11-19).** Everything is scripted with KiCad 10's pcbnew Python in
-`layout_poe_pd.py` (`prepare` places, routes, pours and fills; `finish` refills). **Nothing is autorouted.**
-Freerouting can't apply the fine-pitch fan-out exception below, so every track, via and zone is written in the
-script, which checks the pad positions it was written against before it draws anything.
+**How it was made (Ion-Speakers#15, 2026-11-20).** Everything is scripted with KiCad 10's pcbnew Python in
+`layout_poe_pd.py`: `prepare` places, routes, stitches, pours and fills; `finish` refills; `copper` measures the FET
+copper for section 5a. **Nothing is autorouted.** Freerouting was tried for the LT4321's signals and dropped: it
+left unrouted runs and its own clearance violations. So every track, via and zone is written in the script.
 
 | | |
 |---|---|
-| Size | 130 x 74 mm outline (the test project's), parts on the top side only. Rev A's was 62 x 45 mm: the growth is the FET copper for the 90 W worst case |
-| Copper | F.Cu and B.Cu only, so the block sits on a 2-, 4- or 6-layer board; inner layers are the board's |
-| Bridge | four pair rows (12, 36, gap, 45, 78), each a PR pour of 43.8 x 12 mm on both layers. A BR_P strip runs down the left, with a band along the top to L10; a BR_N strip runs down the right. Each row's top FET is on the left edge (tab in the BR_P strip, sources in the row) and its bottom FET on the right edge (tab in the row, sources in the BR_N strip) |
-| LT4321 | in the gap between the pair sets. Gate drives and pair senses fan out on F.Cu to vias and run on B.Cu (TG down the left, BG down the right), so the F.Cu pours stay whole; OUTP reaches the BR_P band on an F.Cu riser at x 40 |
-| Power path | pours on both layers, via-stitched (~220 vias: 0.8/0.4 mm on POE nets, 0.6/0.3 mm on signals); short 0.5-1.0 mm stubs where a pad meets a pour. The worst case is 1.73 A; IPC-2221 external, 10 C rise, 1 oz needs ~0.64 mm |
-| FET copper | section 5a: every conducting FET at or under ~109 C at 50 C air |
-| PD section | L10 -> VPORT band (top) with D10, C101, D13 and Q58's tab -> POE_VDD pour (Q58's sources, C105+, R105) -> VSS pour (U10, the class resistors, C102, C104, C105-) |
+| Size | **54 x 40 mm** outline, 4 layers, parts on the top side only. Jeff picked 4 layers at an estimated 54 x 36 (Ion-Speakers#15). It grew 4 mm in Y so the LT4321's fan-out, and the LT4294's TVS and CPD next to it, fit under the bridge (Jeff, 2026-11-19). Rev B's first, 2-layer layout was 130 x 74 mm |
+| Layers | F.Cu, In1.Cu, In2.Cu, B.Cu (PCBWay 4-layer, 1 oz each, 1.6 mm). On a host board, the block owns all four layers inside its outline |
+| Bridge | a BR_P column in the middle, with two pair cells either side (PR12 over PR36 on the left, PR45 over PR78 on the right, ~10 x 11 mm each) and a BR_N strip on each outer edge. Each top FET straddles its cell and the column; each bottom FET straddles the strip and its cell. Every pour is on all four layers and via-stitched, so each conducting FET's tab has its own ~9 mm square on every layer (section 5a). In1 joins the two BR_N strips with a band across the top |
+| LT4321 | below the bridge, with a ring of fan-out vias 5 mm out (`FANOUT_U12`). Its pins run in roughly the reverse order of the bridge's signals, so the west group winds round it one way and the east group the other, each layer keeping its own order. West: BG36 and BG12 on F.Cu, TG12, TG36 and PR36 on B.Cu, PR12 on In2. East: PR78, TG78, TG45 and PR45 on B.Cu, BG45 and BG78 on In1. Gate drives from the bridge come down the BR_N strips (B.Cu) and the cell / column gaps (In1); senses PR12 and PR45 come down on In2 |
+| Bottom strip | U12, its CPD C103 and TVS D12; C100 and the choke L10, whose BR_P input sits on an F.Cu extension of the BR_P column. Under the bridge side, In1 is a BR_N plane and In2 a BR_P plane; the only signals in them are the short lanes above |
+| PD | the VPORT square (Q58's tab, all layers) is fed from L10.1 by an F.Cu leg, which also carries the EN zener D13 (LT4321 Fig. 5) and C101. U10 sits with its class resistors, its CPD C102 and its TVS D10 right next to it (LT4294 p11). The POE_VDD pour runs from Q58's sources to C105.1; POE_VSS is on F.Cu and both inner layers (PD side) |
+| Power path | pours, via-stitched (155 vias: 0.8/0.4 mm on POE nets, 0.6/0.3 mm on signals). The worst case is 1.80 A; IPC-2221 external, 10 C rise, 1 oz needs ~0.64 mm (internal ~1.6 mm) |
+| FET copper | section 5a: every conducting FET at or under 110 C at 50 C air, and under 120 C with no inner-layer credit |
 | U10 | the plain DFN-10 footprint (no vias in the exposed pad, CLAUDE.md section 7); its pad joins the VSS pour on F.Cu |
-| Clearances | POE_IN nets (POE_VDD, POE_VSS, BR_P/N, PR12-PR78, PD_VPORT, PD_VPIN) 0.6 mm (IPC-2221 Table 6-1 B2, 31-150 V). 0.25 mm inside the LT4321 and LT4294 fan-out areas (rule areas `FANOUT_U12`, `FANOUT_U10`) and the FET courtyards: functional insulation inside the primary circuit, at no less than the parts' own pad gaps. Other nets 0.15 mm. In `poe_pd.kicad_dru` and the project's netclasses |
-| Isolation barrier | a 6 mm keep-out band (no tracks, vias or pours, F.Cu and B.Cu) under U11, and a DRC rule: secondary nets (+3V3, GND, POE_T2P_N) keep 6 mm clearance and creepage from everything else. 6 mm is wallnode-amp's moat placeholder until IEC 62368-1 is in the library; the FOD817 pads are 7.52 mm apart |
-| Ports | the pads themselves: PR12-PR78 on the FETs' PR copper, POE_VDD and POE_VSS on C105's pads, PD_PWRGD on TP41, POE_T2P_N / +3V3 / GND on R106 and U11's output pins (right edge) |
+| Clearances | POE_IN nets (POE_VDD, POE_VSS, BR_P/N, PR12-PR78, PD_VPORT, PD_VPIN) 0.6 mm on every layer (IPC-2221 Table 6-1 B2, 31-150 V), as wallnode-amp's rules. 0.25 mm inside the LT4321 and LT4294 fan-out areas (rule areas `FANOUT_U12`, `FANOUT_U10`) and the FET courtyards: functional insulation inside the primary circuit, at no less than the parts' own pad gaps. Other nets 0.15 mm. In `poe_pd.kicad_dru` and the project's netclasses |
+| Isolation barrier | a 6 mm keep-out band on all four layers (no tracks, vias or pours) around the secondary corner at the top right, and a DRC rule: secondary nets (+3V3, GND, POE_T2P_N) keep 6 mm clearance and creepage from everything else. 6 mm is wallnode-amp's moat placeholder until IEC 62368-1 is in the library; the FOD817 pads are 7.52 mm apart |
+| Ports | the pads themselves: PR12-PR78 on the FETs' cell copper; POE_VDD and POE_VSS on C105's pads (bottom right of centre); PD_PWRGD on TP41; POE_T2P_N, +3V3 and GND on R106 and U11's output pins (top-right corner) |
 | Checks | DRC (`kicad-cli pcb drc --refill-zones --schematic-parity`): 0 errors, 0 warnings, 0 unconnected, parity 0 |
 
-A board that places the block keeps its own barrier: the band has to line up with the board's moat, and no
-inner-layer plane may run under the band or join the two sides.
+A board that places the block keeps its own barrier. The band has to line up with the board's moat, and no plane
+of the board may run under the band or join the two sides.

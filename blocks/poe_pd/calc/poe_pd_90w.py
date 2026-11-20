@@ -110,7 +110,14 @@ N_REVERSE = 4
 # isn't read as a big square, and nothing far away counts). The curves read the smallest layer's area as the square
 # (each layer counted once: rev B's first table summed F.Cu and B.Cu and read the sum on the 2 oz curve, which
 # counted the copper twice). Rows: (name, {layer: mm2}, loss kind, neighbour conducting within ~2 mm).
-COPPER = []
+COPPER = [   # layout_poe_pd.py 'copper' on the filled 54 x 40 mm block (2026-11-20)
+    ('Q50, Q52 top (BR_P column; worst of the four)', {'F.Cu': 88, 'In1.Cu': 83, 'In2.Cu': 94, 'B.Cu': 88}, True),
+    ('Q54 bottom, PR12 cell', {'F.Cu': 87, 'In1.Cu': 73, 'In2.Cu': 84, 'B.Cu': 84}, True),
+    ('Q55 bottom, PR36 cell', {'F.Cu': 89, 'In1.Cu': 86, 'In2.Cu': 86, 'B.Cu': 86}, True),
+    ('Q56 bottom, PR45 cell', {'F.Cu': 86, 'In1.Cu': 75, 'In2.Cu': 84, 'B.Cu': 86}, True),
+    ('Q57 bottom, PR78 cell', {'F.Cu': 88, 'In1.Cu': 84, 'In2.Cu': 82, 'B.Cu': 88}, True),
+    ('Q58 hot-swap (VPORT square)', {'F.Cu': 92, 'In1.Cu': 80, 'In2.Cu': 80, 'B.Cu': 80}, False),
+]
 CU_4L, CU_OUTER = 140, 70       # um summed: PCBWay 4L 1 oz x 4; and with no inner-layer credit (outer 1 oz + 1 oz)
 
 

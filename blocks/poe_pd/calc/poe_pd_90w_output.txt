@@ -37,5 +37,11 @@ U10 LT4294HDD                           2 mA x 57 V (p3); up to 1.5 W during cla
 Front-end FET loss, worst case: 3 x 0.296 = 0.89 W (1.0% of 90 W); L10 DCR adds ~0.2 W.
 
 Board copper per FET (AN90003 Rev 5.0 Fig. 25 / Fig. 35 / Fig. 41, calc/fet_copper.py): 0.320 W each (175 C Rds(on), 50 V row), 50 C air; sized to 110 C with the 4 x 1 oz stack, and <= 120 C (PCB limit) with no inner-layer credit:
+  Q50, Q52 top (BR_P column; worst of the four)      88 / 83 / 94 / 88 mm2 ->  9.1 mm sq: Tj  107 C; outer only  9.4 mm sq:  111 C  PASS
+  Q54 bottom, PR12 cell                             87 / 73 / 84 / 84 mm2 ->  8.5 mm sq: Tj  110 C; outer only  9.2 mm sq:  113 C  PASS
+  Q55 bottom, PR36 cell                             89 / 86 / 86 / 86 mm2 ->  9.3 mm sq: Tj  106 C; outer only  9.3 mm sq:  112 C  PASS
+  Q56 bottom, PR45 cell                             86 / 75 / 84 / 86 mm2 ->  8.7 mm sq: Tj  109 C; outer only  9.3 mm sq:  112 C  PASS
+  Q57 bottom, PR78 cell                             88 / 84 / 82 / 88 mm2 ->  9.1 mm sq: Tj  107 C; outer only  9.4 mm sq:  111 C  PASS
+  Q58 hot-swap (VPORT square)                       92 / 80 / 80 / 80 mm2 ->  8.9 mm sq: Tj  101 C; outer only  8.9 mm sq:  106 C  PASS
   Layers F.Cu / In1.Cu / In2.Cu / B.Cu, each within a 14 mm square on the tab. "Outer only" is the bound Jeff set: inner layers give nothing, F.Cu + B.Cu read as one 2 oz layer.
   Re-check with kit #428's board thermal check once it exists, and with an IR picture at the highest grant (BRINGUP.md).
