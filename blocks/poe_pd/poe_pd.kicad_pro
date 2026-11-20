@@ -290,7 +290,7 @@
       },
       {
         "bus_width": 12,
-        "clearance": 0.6,
+        "clearance": 0.2,
         "diff_pair_gap": 0.25,
         "diff_pair_via_gap": 0.25,
         "diff_pair_width": 0.2,
@@ -339,15 +339,7 @@
       },
       {
         "netclass": "POE_IN",
-        "pattern": "/PoE PD/POE_VSS"
-      },
-      {
-        "netclass": "POE_IN",
-        "pattern": "/PoE PD/BR_P"
-      },
-      {
-        "netclass": "POE_IN",
-        "pattern": "/PoE PD/BR_N"
+        "pattern": "POE_VSS"
       },
       {
         "netclass": "POE_IN",
@@ -367,7 +359,19 @@
       },
       {
         "netclass": "POE_IN",
-        "pattern": "VCIN"
+        "pattern": "/PoE PD/BR_P"
+      },
+      {
+        "netclass": "POE_IN",
+        "pattern": "/PoE PD/BR_N"
+      },
+      {
+        "netclass": "POE_IN",
+        "pattern": "/PoE PD/PD_VPORT"
+      },
+      {
+        "netclass": "POE_IN",
+        "pattern": "/PoE PD/PD_VPIN"
       },
       {
         "netclass": "SECONDARY",
@@ -379,11 +383,7 @@
       },
       {
         "netclass": "SECONDARY",
-        "pattern": "POE_TPH_N"
-      },
-      {
-        "netclass": "SECONDARY",
-        "pattern": "POE_TPL_N"
+        "pattern": "POE_T2P_N"
       }
     ]
   },

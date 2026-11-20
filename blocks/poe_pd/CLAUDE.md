@@ -10,6 +10,8 @@ module a board copies; `src/poe_pd.py` is the harness that wires its ports to na
 Check with `tools\check-blocks.ps1` from the repo root (parity 0 and the copy identical). Change the
 drawing and the Python together, in the same commit. See BLOCK.md.
 
+The ratings are `calc/poe_pd_90w.py` (output committed; tests `python -I -m unittest discover -s calc`).
+
 The layout is `poe_pd.kicad_pcb`, made by `layout_poe_pd.py` (KiCad's python: `prepare`, then `finish`);
 change the script, not the board, then `python tools\block_layout.py copy . poe_pd` and DRC
 (`kicad-cli pcb drc --refill-zones --schematic-parity`) to 0. BLOCK.md section 9 has the details.

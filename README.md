@@ -12,7 +12,7 @@ measurements from a built board. Until then it's a reviewed design, not a tested
 
 | Block | What it is | Proven on | Status |
 |---|---|---|---|
-| [`poe_pd`](blocks/poe_pd/BLOCK.md) | IEEE 802.3bt PoE PD front end: Schottky bridges, CM choke and TVS, TPS2373-4 (Class 8), TPH/TPL over optocouplers | not yet (wallnode-amp rev A) | drawn, parity 0; laid out (2-layer, DRC 0) |
+| [`poe_pd`](blocks/poe_pd/BLOCK.md) | IEEE 802.3bt PoE PD front end (ADI DC2583A design): LT4321 ideal-diode bridge, CM choke and TVS, LT4294 (Class 8) with a high-side hot-swap FET, T2P grant over an optocoupler; rated for 90 W continuous, no PD current limit | not yet (wallnode-amp rev A) | drawn, parity 0; laid out (2-layer, DRC 0, FET copper sized for 90 W) |
 
 ## What's in a block
 

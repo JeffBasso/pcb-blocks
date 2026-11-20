@@ -15,6 +15,6 @@ def board():
     for paths in skidl.lib_search_paths.values():
         if _LIB not in paths:
             paths.append(_LIB)
-    ports = [Net(n) for n in ('PR12', 'PR36', 'PR45', 'PR78', 'POE_VDD', 'PRI_RTN', 'VCIN', 'VCOUT',
-                              'CONV_SS', 'POE_TPH_N', 'POE_TPL_N', '+3V3', 'GND')]
+    ports = [Net(n) for n in ('PR12', 'PR36', 'PR45', 'PR78', 'POE_VDD', 'POE_VSS', 'PD_PWRGD',
+                              'POE_T2P_N', '+3V3', 'GND')]
     poe_pd(*ports)
