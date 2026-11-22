@@ -1,19 +1,21 @@
 (version 1)
 
-# poe_pd block layout rules (pcb-blocks#2). The same rules as wallnode-amp, where the block was drawn.
-# A board that places the block brings its own rules; keep these in step with it.
+# poe_pd block layout rules (LT4294 + LT4321). A board that places the block brings its own rules; keep these
+# in step with it (wallnode-amp's POE_IN rules).
 
 # PoE nets (POE_IN netclass, up to 57 V): IPC-2221 Table 6-1 B2, external uncoated, 31-150 V = 0.6 mm.
-# Pad-to-pad inside the fine-pitch parts follows their land patterns (B4, coated/under the body, 0.13 mm).
+# Pad-to-pad inside a part follows its land pattern.
 (rule "POE_IN 57 V copper except pad-to-pad"
 	(condition "(A.NetClass == 'POE_IN' || B.NetClass == 'POE_IN') && !(A.Type == 'Pad' && B.Type == 'Pad')")
 	(constraint clearance (min 0.6mm)))
 
-# Fan-out inside the TPS2373 (U10, 0.65 mm pitch): POE_IN items keep 0.2 mm inside U10's courtyard
-# (same basis, B4 under the part body); 0.6 mm everywhere else. Later rules take priority.
-(rule "POE_IN fan-out inside the TPS2373 courtyard"
-	(condition "(A.NetClass == 'POE_IN' || B.NetClass == 'POE_IN') && (A.intersectsCourtyard('U10') || B.intersectsCourtyard('U10'))")
-	(constraint clearance (min 0.2mm)))
+# Fan-out of the fine-pitch parts: the LT4321 (0.65 mm pitch, 0.30 mm pads), the LT4294 (0.5 mm pitch, 0.25 mm
+# pads) and the LFPAK33 gate pins (0.65 mm pitch) cannot escape at 0.6 mm. Inside their fan-out areas and
+# courtyards POE_IN copper keeps 0.25 mm: functional insulation inside the primary circuit, at no less than the
+# parts' own pad gaps (ADI's DC2583A lays these parts out the same way). Later rules take priority.
+(rule "POE_IN fan-out at the fine-pitch parts"
+	(condition "(A.NetClass == 'POE_IN' || B.NetClass == 'POE_IN') && !(A.Type == 'Pad' && B.Type == 'Pad') && (A.intersectsArea('FANOUT_U12') || B.intersectsArea('FANOUT_U12') || A.intersectsArea('FANOUT_U10') || B.intersectsArea('FANOUT_U10') || A.intersectsCourtyard('U10') || B.intersectsCourtyard('U10') || A.intersectsCourtyard('U12') || B.intersectsCourtyard('U12') || A.intersectsCourtyard('Q5*') || B.intersectsCourtyard('Q5*'))")
+	(constraint clearance (min 0.25mm)))
 
 # Isolation barrier: secondary copper (the opto outputs, +3V3, GND) keeps 6 mm from everything on the PoE
 # side, in clearance and in creepage. 6 mm is wallnode-amp's moat placeholder until IEC 62368-1 is in the

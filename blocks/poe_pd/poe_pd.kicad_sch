@@ -331,26 +331,6 @@
 		)
 		(uuid "bbc8c1c4-e244-51ff-a8dd-137abbf90af1")
 	)
-	(wire
-		(pts
-			(xy 50.8 58.42) (xy 63.5 58.42)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "fe839cf8-eaf4-5ac1-af65-f4b8af9913d5")
-	)
-	(wire
-		(pts
-			(xy 50.8 60.96) (xy 63.5 60.96)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "13aa7705-fabc-5eca-ad19-ece4503ab643")
-	)
 	(global_label "+3V3"
 		(shape passive)
 		(at 63.5 83.82 180)
@@ -418,7 +398,7 @@
 		(uuid "a04c433b-b2ad-52d5-ab8e-02aa41d4a80c")
 	)
 	(global_label "POE_VDD"
-		(shape bidirectional)
+		(shape output)
 		(at 50.8 50.8 180)
 		(effects
 			(font
@@ -428,8 +408,8 @@
 		)
 		(uuid "469388b4-0bca-5d28-a530-421eb4b59c41")
 	)
-	(global_label "VCIN"
-		(shape bidirectional)
+	(global_label "PD_PWRGD"
+		(shape output)
 		(at 50.8 53.34 180)
 		(effects
 			(font
@@ -439,7 +419,7 @@
 		)
 		(uuid "9d93faa2-43e4-5c04-b144-201cfc0db570")
 	)
-	(global_label "CONV_SS"
+	(global_label "POE_T2P_N"
 		(shape output)
 		(at 50.8 55.88 180)
 		(effects
@@ -449,28 +429,6 @@
 			(justify right)
 		)
 		(uuid "1b3cf49c-2848-54f6-8e1b-e2889f7584c5")
-	)
-	(global_label "POE_TPH_N"
-		(shape output)
-		(at 50.8 58.42 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "cb0d0e4a-9f07-58a7-8872-5c85902b8a49")
-	)
-	(global_label "POE_TPL_N"
-		(shape output)
-		(at 50.8 60.96 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "d1eeff44-954f-56b3-90a9-e2578f6f4889")
 	)
 	(sheet
 		(at 63.5 38.1)
@@ -546,7 +504,7 @@
 				(justify left)
 			)
 		)
-		(pin "POE_VDD" bidirectional
+		(pin "POE_VDD" output
 			(at 63.5 50.8 180)
 			(uuid "cc9204db-9e85-5ab0-948e-575ab106ad37")
 			(effects
@@ -556,7 +514,7 @@
 				(justify left)
 			)
 		)
-		(pin "VCIN" bidirectional
+		(pin "PD_PWRGD" output
 			(at 63.5 53.34 180)
 			(uuid "a886ff50-98d0-5109-9157-18f811cc151e")
 			(effects
@@ -566,29 +524,9 @@
 				(justify left)
 			)
 		)
-		(pin "CONV_SS" output
+		(pin "POE_T2P_N" output
 			(at 63.5 55.88 180)
 			(uuid "7af438d8-b9b4-58f0-82d5-3cea164e22a3")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(pin "POE_TPH_N" output
-			(at 63.5 58.42 180)
-			(uuid "20d4b3e6-6241-5c74-9407-46a3d6f8de0c")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(pin "POE_TPL_N" output
-			(at 63.5 60.96 180)
-			(uuid "eff45309-9ef3-50db-a2b5-346f4178dfe1")
 			(effects
 				(font
 					(size 1.27 1.27)
